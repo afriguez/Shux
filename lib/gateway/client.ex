@@ -63,4 +63,12 @@ defmodule Shux.Gateway.Client do
     Heartbeat.ack(state.heartbeat_pid, state.seq_num)
     {:ok, state}
   end
+
+  defp handle_operation(:reconnect, _payload, state) do
+    {:close, state}
+  end
+
+  defp handle_operation(:invalid_session, _payload, state) do
+    {:close, state}
+  end
 end

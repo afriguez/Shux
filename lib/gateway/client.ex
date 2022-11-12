@@ -29,6 +29,7 @@ defmodule Shux.Gateway.Client do
   end
 
   def handle_connect(_conn, state) do
+    identify()
     {:ok, state}
   end
 
@@ -70,5 +71,34 @@ defmodule Shux.Gateway.Client do
 
   defp handle_operation(:invalid_session, _payload, state) do
     {:close, state}
+  end
+
+  def identify do
+    payload =
+      Poison.encode!(%{
+        op: @opcodes[:identify],
+        d: %{
+          token: "",
+          intents: 34305,
+          compress: false,
+          properties: %{
+            os: "linux",
+            browser: "shux",
+            device: "shux"
+          },
+          presence: %{
+            activities: [
+              %{
+                name: "Not a Number",
+                type: 0
+              }
+            ],
+            status: "online",
+            afk: false
+          }
+        }
+      })
+
+    WebSockex.cast(self(), {:send, {:text, payload}})
   end
 end

@@ -73,6 +73,13 @@ defmodule Shux.Gateway.Client do
     {:close, state}
   end
 
+  defp handle_operation(:dispatch, payload, state) do
+    event = String.to_atom(payload.t)
+    IO.inspect(event)
+
+    {:ok, state}
+  end
+
   def identify do
     payload =
       Poison.encode!(%{

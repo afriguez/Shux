@@ -32,6 +32,10 @@ defmodule Shux.Gateway.Client do
     handle_operation(opname, payload, state)
   end
 
+  def handle_cast({:send, frame}, state) do
+    {:reply, frame, state}
+  end
+
   defp handle_operation(:hello, payload, state) do
     {:ok, pid} = Heartbeat.start_link({payload.d.heartbeat_interval, payload.s, self()})
     {:ok, %{state | heartbeat_pid: pid}}

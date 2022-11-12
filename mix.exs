@@ -18,6 +18,9 @@ defmodule Shux.MixProject do
   end
 
   defp deps do
-    []
+    [
+      {:websockex, "~> 0.4.3"},
+      {:poison, "~> 5.0"}
+    ]
   end
 end

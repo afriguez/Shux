@@ -2,6 +2,7 @@ defmodule Shux.Gateway.Client do
   use WebSockex
 
   alias Shux.Gateway.Heartbeat
+  alias Shux.Bot.Handlers.MessageHandler
 
   @gateway_url "wss://gateway.discord.gg/?v=10&encoding=json"
 
@@ -77,7 +78,23 @@ defmodule Shux.Gateway.Client do
     event = String.to_atom(payload.t)
     IO.inspect(event)
 
+    handle_event(event, payload.d)
     {:ok, state}
+  end
+
+  defp handle_event(:MESSAGE_CREATE, data) do
+    MessageHandler.handle(data)
+  end
+
+  defp handle_event(:MESSAGE_UPDATE, data) do
+    MessageHandler.handle(data, :edited)
+  end
+
+  defp handle_event(:MESSAGE_DELETE, data) do
+    MessageHandler.handle(data, :deleted)
+  end
+
+  defp handle_event(_event, _data) do
   end
 
   def identify do

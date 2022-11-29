@@ -39,7 +39,7 @@ defmodule Shux.Gateway.Heartbeat do
     )
 
     timer_ref = Process.send_after(self(), :beat, state.interval)
-    {:noreply, %{state | ack?: false, time_ref: timer_ref}}
+    {:noreply, %{state | ack?: false, timer_ref: timer_ref}}
   end
 
   def ack(heartbeat_pid, seq_num) do

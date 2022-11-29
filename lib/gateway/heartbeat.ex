@@ -10,7 +10,8 @@ defmodule Shux.Gateway.Heartbeat do
       interval: interval,
       seq_num: seq_num,
       client_pid: client_pid,
-      ack?: true
+      ack?: true,
+      timer_ref: nil
     }
 
     send(self(), :beat)
@@ -22,6 +23,10 @@ defmodule Shux.Gateway.Heartbeat do
   end
 
   def handle_info(:beat, state) do
+    if state.timer_ref do
+      Process.cancel_timer(state.timer_ref)
+    end
+
     unless state.ack? do
       send(state.client_pid, :deadbeat)
     end
@@ -33,8 +38,8 @@ defmodule Shux.Gateway.Heartbeat do
       {:send, {:text, payload}}
     )
 
-    Process.send_after(self(), :beat, state.interval)
-    {:noreply, %{state | ack?: false}}
+    timer_ref = Process.send_after(self(), :beat, state.interval)
+    {:noreply, %{state | ack?: false, time_ref: timer_ref}}
   end
 
   def ack(heartbeat_pid, seq_num) do

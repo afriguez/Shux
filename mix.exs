@@ -20,7 +20,8 @@ defmodule Shux.MixProject do
   defp deps do
     [
       {:websockex, "~> 0.4.3"},
-      {:poison, "~> 5.0"}
+      {:poison, "~> 5.0"},
+      {:httpoison, "~> 1.8.2"}
     ]
   end
 end

@@ -1,4 +1,4 @@
-defmodule Shux.Gateway.Heartbeat do
+defmodule Shux.Discord.Gateway.Heartbeat do
   use GenServer
 
   def start_link({_interval, _seq_num, _client_pid} = args, opts \\ []) do

@@ -1,7 +1,7 @@
-defmodule Shux.Gateway.Client do
+defmodule Shux.Discord.Gateway.Client do
   use WebSockex
 
-  alias Shux.Gateway.Heartbeat
+  alias Shux.Discord.Gateway.Heartbeat
   alias Shux.Bot.Handlers.MessageHandler
 
   @gateway_url "wss://gateway.discord.gg/?v=10&encoding=json"

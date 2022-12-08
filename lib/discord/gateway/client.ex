@@ -3,6 +3,7 @@ defmodule Shux.Discord.Gateway.Client do
 
   alias Shux.Discord.Gateway.Heartbeat
   alias Shux.Bot.Handlers.MessageHandler
+  alias Shux.Bot.Handlers.InteractionHandler
 
   @gateway_url "wss://gateway.discord.gg/?v=10&encoding=json"
 
@@ -96,6 +97,10 @@ defmodule Shux.Discord.Gateway.Client do
 
   defp handle_event(:MESSAGE_DELETE, data) do
     MessageHandler.handle(data, :deleted)
+  end
+
+  defp handle_event(:INTERACTION_CREATE, data) do
+    InteractionHandler.handle(data)
   end
 
   defp handle_event(_event, _data) do

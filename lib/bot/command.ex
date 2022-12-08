@@ -8,5 +8,11 @@ defmodule Shux.Bot.Command do
 
   @callback help() :: help_map()
 
-  @callback run(perms :: atom()) :: :ok | :invalid | :error
+  @callback run(
+              perms :: atom(),
+              content :: String.t(),
+              args :: list(),
+              opts :: list()
+            ) ::
+              {:ok, any()} | {:invalid, String.t()} | {:error, String.t()}
 end

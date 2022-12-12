@@ -111,7 +111,7 @@ defmodule Shux.Discord.Gateway.Client do
       Poison.encode!(%{
         op: @opcodes[:identify],
         d: %{
-          token: "",
+          token: Application.get_env(:shux, :bot_token),
           intents: 34305,
           compress: false,
           properties: %{

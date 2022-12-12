@@ -3,10 +3,12 @@ defmodule Shux.Discord.Api do
 
   @endpoint "https://discord.com/api/v10"
 
-  @headers [
-    {"Authorization", "Bot "},
-    {"Content-Type", "application/json"}
-  ]
+  def headers do
+    [
+      {"Authorization", "Bot " <> Application.get_env(:shux, :bot_token)},
+      {"Content-Type", "application/json"}
+    ]
+  end
 
   def process_url(url) do
     @endpoint <> url
@@ -16,7 +18,7 @@ defmodule Shux.Discord.Api do
     post(
       "/channels/#{ch_id}/messages",
       Poison.encode!(%{content: content}),
-      @headers
+      headers()
     )
   end
 
@@ -24,7 +26,7 @@ defmodule Shux.Discord.Api do
     post(
       "/channels/#{ch_id}/messages",
       Poison.encode!(message),
-      @headers
+      headers()
     )
   end
 end

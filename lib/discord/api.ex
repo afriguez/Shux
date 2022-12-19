@@ -37,4 +37,12 @@ defmodule Shux.Discord.Api do
       headers()
     )
   end
+
+  def interaction_callback(interaction, response) when is_map(response) do
+    post(
+      "/interactions/#{interaction.id}/#{interaction.token}/callback",
+      Poison.encode!(response),
+      headers()
+    )
+  end
 end

@@ -29,4 +29,12 @@ defmodule Shux.Discord.Api do
       headers()
     )
   end
+
+  def create_channel(guild_id, channel) when is_map(channel) do
+    post(
+      "/guilds/#{guild_id}/channels",
+      Poison.encode!(channel),
+      headers()
+    )
+  end
 end

@@ -1,5 +1,10 @@
 defmodule Shux.Bot.Handlers.InteractionHandler do
-  @interactions %{}
+  alias Shux.Bot.Interactions
+
+  @interactions %{
+    avatar: Interactions.Avatar,
+    member_avatar: Interactions.Avatar
+  }
 
   def handle(data) do
     interaction = Map.get(@interactions, String.to_atom(data.data.custom_id))

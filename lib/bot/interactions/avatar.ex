@@ -25,6 +25,7 @@ defmodule Shux.Bot.Interactions.Avatar do
             id: "959791808915832842",
             animated: false
           },
+          label: " Actualizar",
           custom_id: custom_id
         )
       ])

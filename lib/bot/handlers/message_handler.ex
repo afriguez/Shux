@@ -2,7 +2,7 @@ defmodule Shux.Bot.Handlers.MessageHandler do
   alias Shux.Bot.Commands
 
   @commands %{
-    help: Commands.Help
+    avatar: Commands.Avatar,
   }
 
   def handle(data) do

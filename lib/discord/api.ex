@@ -38,6 +38,9 @@ defmodule Shux.Discord.Api do
     )
   end
 
+  def delete_channel(channel_id) when is_binary(channel_id),
+    do: delete("/channels/#{channel_id}", headers())
+
   def interaction_callback(interaction, response) when is_map(response) do
     post(
       "/interactions/#{interaction.id}/#{interaction.token}/callback",

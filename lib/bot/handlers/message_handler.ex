@@ -3,6 +3,7 @@ defmodule Shux.Bot.Handlers.MessageHandler do
 
   @commands %{
     avatar: Commands.Avatar,
+    ticket: Commands.Ticket
   }
 
   def handle(data) do

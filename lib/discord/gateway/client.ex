@@ -1,6 +1,7 @@
 defmodule Shux.Discord.Gateway.Client do
   use WebSockex
 
+  alias Shux.Discord.Gateway.Intents
   alias Shux.Discord.Gateway.Heartbeat
   alias Shux.Bot.Handlers.MessageHandler
   alias Shux.Bot.Handlers.InteractionHandler
@@ -107,12 +108,20 @@ defmodule Shux.Discord.Gateway.Client do
   end
 
   def identify do
+    intents =
+      Intents.value([
+        :guilds,
+        :guild_messages,
+        :guild_message_reactions,
+        :message_content
+      ])
+
     payload =
       Poison.encode!(%{
         op: @opcodes[:identify],
         d: %{
           token: Application.get_env(:shux, :bot_token),
-          intents: 34305,
+          intents: intents,
           compress: false,
           properties: %{
             os: "linux",

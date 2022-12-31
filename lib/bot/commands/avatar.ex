@@ -19,9 +19,11 @@ defmodule Shux.Bot.Commands.Avatar do
 
     avatar_ext = if is_gif, do: ".gif", else: ".png"
 
+    content =
+      "https://cdn.discordapp.com/avatars/#{user.id}/#{user.avatar <> avatar_ext}?size=1024"
+
     Api.send_message(msg.channel_id, %{
-      content:
-        "https://cdn.discordapp.com/avatars/#{user.id}/#{user.avatar <> avatar_ext}?size=1024",
+      content: content,
       components: [
         Components.action_row([
           Components.button(
@@ -33,6 +35,11 @@ defmodule Shux.Bot.Commands.Avatar do
               id: "959791808915832842",
               animated: false
             }
+          ),
+          Components.button(
+            style: 5,
+            label: "Abrir original",
+            url: content
           )
         ])
       ]

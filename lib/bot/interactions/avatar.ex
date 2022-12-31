@@ -27,6 +27,11 @@ defmodule Shux.Bot.Interactions.Avatar do
           },
           label: " Actualizar",
           custom_id: custom_id
+        ),
+        Components.button(
+          style: 5,
+          label: "Abrir original",
+          url: content
         )
       ])
     ]

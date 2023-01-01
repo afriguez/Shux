@@ -30,6 +30,32 @@ defmodule Shux.Discord.Api do
     )
   end
 
+  def send_image(ch_id, image) do
+    body =
+      {:multipart,
+       [
+         {"file", image, {"form-data", [name: "file", filename: "profile.png"]}, []}
+       ]}
+
+    post(
+      "/channels/#{ch_id}/messages",
+      body,
+      [
+        {"Authorization", "Bot " <> Application.get_env(:shux, :bot_token)},
+        {"Content-Type", "multipart/form-data"}
+      ]
+    )
+  end
+
+  def user_avatar(user = %{avatar: "a_" <> avatar}), do: user_avatar(%{user | avatar: avatar})
+
+  def user_avatar(user) do
+    %HTTPoison.Response{body: body} =
+      HTTPoison.get!("https://cdn.discordapp.com/avatars/#{user.id}/#{user.avatar}.png")
+
+    body
+  end
+
   def create_channel(guild_id, channel) when is_map(channel) do
     post(
       "/guilds/#{guild_id}/channels",

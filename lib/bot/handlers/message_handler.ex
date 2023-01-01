@@ -3,7 +3,8 @@ defmodule Shux.Bot.Handlers.MessageHandler do
 
   @commands %{
     avatar: Commands.Avatar,
-    ticket: Commands.Ticket
+    ticket: Commands.Ticket,
+    profile: Commands.Profile
   }
 
   def handle(data) do
@@ -28,6 +29,8 @@ defmodule Shux.Bot.Handlers.MessageHandler do
 
   def handle(_data, :edited) do
   end
+
+  def get_commands, do: @commands
 
   def is_command?(content),
     do: String.downcase(content) |> String.starts_with?(["shux!", "shx!", "sh!", "sx!"])

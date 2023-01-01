@@ -38,6 +38,8 @@ defmodule Shux.Bot.Handlers.MessageHandler do
     |> tl()
     |> List.to_string()
     |> String.split()
-    |> (fn [command | args] -> [String.to_atom(command) | args] end).()
+    |> (fn [command | args] ->
+          [command |> String.downcase() |> String.to_atom() | args]
+        end).()
   end
 end

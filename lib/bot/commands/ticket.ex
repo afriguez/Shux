@@ -5,7 +5,12 @@ defmodule Shux.Bot.Commands.Ticket do
   @behaviour Shux.Bot.Command
 
   def help() do
-    %{usage: "", description: "", perms: :tech, options: ""}
+    %{
+      usage: "sx!ticket",
+      description: "Crea un boton para que al darle click se abra un ticket.",
+      perms: :tech,
+      options: ""
+    }
   end
 
   def run(:admin, msg, args), do: run(:tech, msg, args)

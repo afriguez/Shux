@@ -4,7 +4,8 @@ defmodule Shux.Bot.Handlers.MessageHandler do
   @commands %{
     avatar: Commands.Avatar,
     ticket: Commands.Ticket,
-    profile: Commands.Profile
+    profile: Commands.Profile,
+    help: Commands.Help
   }
 
   def handle(data) do

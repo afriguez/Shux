@@ -15,6 +15,7 @@ defmodule Shux.Bot.Commands.Profile do
 
   def run(_perms, msg, _args) do
     user = if Enum.empty?(msg.mentions), do: msg.author, else: hd(msg.mentions)
+
     %{
       points: points,
       warnings: warns,
@@ -22,7 +23,7 @@ defmodule Shux.Bot.Commands.Profile do
     } = Api.get_user(user.id)
 
     username = user.username <> " #" <> user.discriminator
-    level = Integer.to_string(LevelXpConverter.xp_to_level(String.to_integer(points)))
+    level = LevelXpConverter.xp_to_level(points)
     avatar = Discord.Api.user_avatar(user)
 
     image =
@@ -30,9 +31,9 @@ defmodule Shux.Bot.Commands.Profile do
         avatar,
         {
           username,
-          points,
-          level,
-          warns,
+          Integer.to_string(points),
+          Integer.to_string(level),
+          Integer.to_string(warns),
           desc
         }
       )

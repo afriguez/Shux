@@ -7,10 +7,28 @@ defmodule Shux.Bot.Commands.Ticket do
   def help() do
     %{
       usage: "sx!ticket",
-      description: "Crea un boton para que al darle click se abra un ticket.",
+      description: "Crea un boton para abrir tickets. Si se usa -p el boton sera persistente.",
       perms: :tech,
       options: ""
     }
+  end
+
+  def run(:admin, msg, ["-p"]) do
+    Api.send_message(msg.channel_id, %{
+      content: "",
+      components: [
+        Components.action_row([
+          Components.button(
+            style: 1,
+            label: "Abrir Ticket",
+            custom_id: "persistent_ticket",
+            emoji: %{name: "🎟️", id: nil}
+          )
+        ])
+      ]
+    })
+
+    {:ok, nil}
   end
 
   def run(:admin, msg, args), do: run(:tech, msg, args)

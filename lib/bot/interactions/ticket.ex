@@ -46,13 +46,26 @@ defmodule Shux.Bot.Interactions.Ticket do
         ]
       })
 
-      response = %{
-        type: 7,
-        data: %{
-          content: "**Ticket abierto:** <##{channel_id}>",
-          components: []
-        }
-      }
+      response =
+        cond do
+          interaction.data.custom_id == "persistent_ticket" ->
+            %{
+              type: 4,
+              data: %{
+                content: "**Ticket abierto:** <##{channel_id}>",
+                flags: Integer.to_string(0x40)
+              }
+            }
+
+          true ->
+            %{
+              type: 7,
+              data: %{
+                content: "**Ticket abierto:** <##{channel_id}>",
+                components: []
+              }
+            }
+        end
 
       Api.interaction_callback(interaction, response)
     end

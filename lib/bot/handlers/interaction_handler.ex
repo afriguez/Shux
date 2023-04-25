@@ -5,7 +5,8 @@ defmodule Shux.Bot.Handlers.InteractionHandler do
     avatar: Interactions.Avatar,
     member_avatar: Interactions.Avatar,
     ticket: Interactions.Ticket,
-    close_ticket: Interactions.Ticket
+    close_ticket: Interactions.Ticket,
+    persistent_ticket: Interactions.Ticket
   }
 
   def handle(data) do

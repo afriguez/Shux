@@ -21,8 +21,7 @@ defmodule Shux.Bot.Interactions.Avatar do
         Components.button(
           style: 1,
           emoji: %{
-            name: "ReimuSociety",
-            id: "959791808915832842",
+            name: "🖼️",
             animated: false
           },
           label: " Actualizar",

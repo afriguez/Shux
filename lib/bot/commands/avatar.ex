@@ -31,8 +31,7 @@ defmodule Shux.Bot.Commands.Avatar do
             label: "Actualizar",
             custom_id: "avatar",
             emoji: %{
-              name: "ReimuSociety",
-              id: "959791808915832842",
+              name: "🖼️",
               animated: false
             }
           ),

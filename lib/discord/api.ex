@@ -30,6 +30,24 @@ defmodule Shux.Discord.Api do
     )
   end
 
+  def send_message(ch_id, message, image) do
+    body =
+      {:multipart,
+       [
+         {"json", Poison.encode!(message), {"form-data", [name: "payload_json"]}, []},
+         {"file", image, {"form-data", [name: "file", filename: "profile.png"]}, []}
+       ]}
+
+    post(
+      "/channels/#{ch_id}/messages",
+      body,
+      [
+        {"Authorization", "Bot " <> Application.get_env(:shux, :bot_token)},
+        {"Content-Type", "multipart/form-data"}
+      ]
+    )
+  end
+
   def send_image(ch_id, image) do
     body =
       {:multipart,

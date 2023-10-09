@@ -1,8 +1,8 @@
 defmodule Shux.Bot.Commands.Avatar do
+  @behaviour Shux.Bot.Command
+
   alias Shux.Bot.Components
   alias Shux.Discord.Api
-
-  @behaviour Shux.Bot.Command
 
   def help() do
     %{

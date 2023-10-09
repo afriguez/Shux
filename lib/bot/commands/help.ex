@@ -1,4 +1,6 @@
 defmodule Shux.Bot.Commands.Help do
+  @behaviour Shux.Bot.Command
+
   alias Shux.Discord.Api
   alias Shux.Bot.Handlers.MessageHandler
 

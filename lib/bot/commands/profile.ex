@@ -1,8 +1,9 @@
 defmodule Shux.Bot.Commands.Profile do
+  @behaviour Shux.Bot.Command
+
   alias Shux.Api
   alias Shux.Discord
   alias Shux.Bot.Leveling.LevelXpConverter
-  @behaviour Shux.Bot.Command
 
   def help do
     %{

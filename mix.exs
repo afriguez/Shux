@@ -23,7 +23,7 @@ defmodule Shux.MixProject do
       {:websockex, "~> 0.4.3"},
       {:poison, "~> 5.0"},
       {:httpoison, "~> 1.8.2"},
-      {:image, "~> 0.18.0"}
+      {:image, "~> 0.38.2"}
     ]
   end
 end

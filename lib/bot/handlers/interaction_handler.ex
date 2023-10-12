@@ -4,6 +4,8 @@ defmodule Shux.Bot.Handlers.InteractionHandler do
   @interactions %{
     avatar: Interactions.Avatar,
     member_avatar: Interactions.Avatar,
+    profile_avatar: Interactions.Avatar,
+    banner: Interactions.Banner,
     ticket: Interactions.Ticket,
     close_ticket: Interactions.Ticket,
     persistent_ticket: Interactions.Ticket

@@ -1,6 +1,24 @@
 defmodule Shux.Bot.Interactions.Avatar do
+  import Bitwise
+
   alias Shux.Bot.Components
   alias Shux.Discord.Api
+
+  def run(%{data: %{custom_id: "profile_avatar"}} = interaction) do
+    user_id = interaction.member.user.id
+    avatar_url = user_avatar(user_id, interaction.member.user.avatar)
+
+    response = %{
+      type: 4,
+      data: %{
+        content: avatar_url,
+        flags: 1 <<< 6,
+        components: components("avatar", avatar_url)
+      }
+    }
+
+    Api.interaction_callback(interaction, response)
+  end
 
   def run(%{data: %{custom_id: custom_id}} = interaction) do
     user_id = interaction.member.user.id

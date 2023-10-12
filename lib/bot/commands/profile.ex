@@ -1,6 +1,7 @@
 defmodule Shux.Bot.Commands.Profile do
   @behaviour Shux.Bot.Command
 
+  alias Shux.Bot.Components
   alias Shux.Api
   alias Shux.Discord
   alias Shux.Bot.Leveling.LevelXpConverter
@@ -40,7 +41,34 @@ defmodule Shux.Bot.Commands.Profile do
         }
       )
 
-    Discord.Api.send_image(msg.channel_id, image)
+    Discord.Api.send_message(
+      msg.channel_id,
+      %{
+        content: "",
+        components: [
+          Components.action_row([
+            Components.button(
+              style: 1,
+              label: "Avatar",
+              custom_id: "profile_avatar",
+              emoji: %{
+                name: "🖼️"
+              }
+            ),
+            Components.button(
+              style: 1,
+              label: "Banner",
+              custom_id: "banner",
+              emoji: %{
+                name: "blondytsundere",
+                id: "743640353978056724"
+              }
+            )
+          ])
+        ]
+      },
+      image
+    )
 
     {:ok, nil}
   end

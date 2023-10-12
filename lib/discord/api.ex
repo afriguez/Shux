@@ -14,6 +14,14 @@ defmodule Shux.Discord.Api do
     @endpoint <> url
   end
 
+  def user(user_id) do
+    {:ok, response} =
+      Task.async(fn -> get("/users/#{user_id}", headers()) end)
+      |> Task.await()
+
+    Poison.decode!(response.body, %{keys: :atoms})
+  end
+
   def send_message(ch_id, content) when is_binary(content) do
     post(
       "/channels/#{ch_id}/messages",

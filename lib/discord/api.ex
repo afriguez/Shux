@@ -73,8 +73,6 @@ defmodule Shux.Discord.Api do
     )
   end
 
-  def user_avatar(user = %{avatar: "a_" <> avatar}), do: user_avatar(%{user | avatar: avatar})
-
   def user_avatar(user) do
     %HTTPoison.Response{body: body} =
       HTTPoison.get!("https://cdn.discordapp.com/avatars/#{user.id}/#{user.avatar}.png")

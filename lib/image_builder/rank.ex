@@ -1,7 +1,7 @@
 defmodule Shux.ImageBuilder.Rank do
   alias Shux.Bot.Leveling.LevelXpConverter
 
-  def build(avatar, {username, points, level, rank}) do
+  def build(avatar, {_, points, _, _} = props) do
     path = Path.join([:code.priv_dir(:shux), "assets", "rank.png"])
     {:ok, rank_bg} = Image.open(path)
     {:ok, avatar} = Image.open(avatar)
@@ -16,6 +16,7 @@ defmodule Shux.ImageBuilder.Rank do
     Image.compose!(transparent_bg, avatar, x: 19, y: 5)
     |> Image.compose!(rank_bg)
     |> compose_bar(points)
+    |> compose_text(props)
     |> Image.write!(:memory, suffix: ".png")
   end
 
@@ -29,5 +30,34 @@ defmodule Shux.ImageBuilder.Rank do
       |> Image.rounded!(radius: 14)
 
     Image.compose!(img, bar, x: 180, y: 63)
+  end
+
+  defp compose_text(img, {username, points, level, rank}) do
+    font = "Poppins"
+    points = Integer.to_string(points)
+    level = Integer.to_string(level)
+    rank = Integer.to_string(rank)
+
+    {:ok, t_username} =
+      Image.Text.text(username, font: font, font_size: 22, text_fill_color: :black, font_weight: 600)
+
+    {:ok, t_points} =
+      Image.Text.text("Puntos: " <> points, font: font, font_size: 18, text_fill_color: :black, font_weight: 600)
+
+    {:ok, t_level} =
+      Image.Text.text("Nivel: " <> level, font: font, font_size: 18, text_fill_color: :black, font_weight: 600)
+
+    {:ok, t_rank} =
+      Image.Text.text("#" <> rank, font: font, font_size: 30, text_fill_color: :black, font_weight: 600)
+
+    [
+      {t_username, 184, 26},
+      {t_points, 184, 101},
+      {t_level, 326, 101},
+      {t_rank, 494, 26}
+    ]
+    |> Enum.reduce(img, fn {text, x, y}, acc ->
+      Image.compose!(acc, text, x: x, y: y)
+    end)
   end
 end

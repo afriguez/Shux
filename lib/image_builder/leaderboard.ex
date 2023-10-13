@@ -1,9 +1,15 @@
 defmodule Shux.ImageBuilder.Leaderboard do
-  def build(avatars) when is_list(avatars) do
-    avatars
-    |> Enum.reduce([], &[Image.open!(&1) | &2])
-    |> Enum.reverse()
+  def build(users) when is_list(users) do
+    users
+    |> get_avatars()
     |> compose_leaderboard()
+    |> compose_text(users)
+  end
+
+  defp get_avatars(users) do
+    users
+    |> Enum.reduce([], fn {avatar, _, _, _}, acc -> [Image.open!(avatar) | acc] end)
+    |> Enum.reverse()
   end
 
   defp compose_leaderboard(avatars) do
@@ -23,13 +29,14 @@ defmodule Shux.ImageBuilder.Leaderboard do
       {322, 316, 50}
     ]
 
-    leaderboard =
-      for {{x, y, size}, avatar} <- Enum.zip(pos_and_sizes, avatars) do
-        {avatar, x, y, size}
-      end
-      |> compose_avatars(transparent_bg)
-      |> Image.compose!(leaderboard_bg)
+    for {{x, y, size}, avatar} <- Enum.zip(pos_and_sizes, avatars) do
+      {avatar, x, y, size}
+    end
+    |> compose_avatars(transparent_bg)
+    |> Image.compose!(leaderboard_bg)
+  end
 
+  defp compose_text(leaderboard, _users) do
     Image.write!(leaderboard, :memory, suffix: ".png")
   end
 

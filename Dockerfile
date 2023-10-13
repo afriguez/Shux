@@ -18,6 +18,6 @@ RUN mix local.hex --force && \
 FROM elixir:1.14-alpine
 
 COPY --from=build /app/_build/prod/rel/shux /opt/shux
-COPY --from=build /app/Poppins-*.ttf /usr/share/fonts/Poppins
+COPY --from=build /app/Poppins-*.ttf /usr/share/fonts/Poppins/
 
 CMD ["/opt/shux/bin/shux", "start"]

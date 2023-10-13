@@ -23,10 +23,10 @@ defmodule Shux.ImageBuilder.Profile do
   def build_background(base_bg, {username, points, level, warns, desc}) do
     font = "Poppins"
 
-    {:ok, t_username} = Image.Text.text(username, font: font, font_size: 24)
-    {:ok, t_points} = Image.Text.text("Puntos: " <> points, font: font, font_size: 18)
-    {:ok, t_level} = Image.Text.text("Nivel: " <> level, font: font, font_size: 18)
-    {:ok, t_warns} = Image.Text.text("Warns: " <> warns, font: font, font_size: 18)
+    {:ok, t_username} = Image.Text.text(username, font: font, font_size: 22, font_weight: 600)
+    {:ok, t_points} = Image.Text.text("Puntos: " <> points, font: font, font_size: 18, font_weight: 600)
+    {:ok, t_level} = Image.Text.text("Nivel: " <> level, font: font, font_size: 18, font_weight: 600)
+    {:ok, t_warns} = Image.Text.text("Warns: " <> warns, font: font, font_size: 18, font_weight: 600)
 
     {:ok, t_desc} =
       Image.Text.text(

@@ -9,6 +9,8 @@ defmodule Shux.Bot.Handlers.InteractionHandler do
     ticket: Interactions.Ticket,
     close_ticket: Interactions.Ticket,
     persistent_ticket: Interactions.Ticket,
+    description: Interactions.Description,
+    update_description: Interactions.Description,
     profile: Interactions.Profile
   }
 

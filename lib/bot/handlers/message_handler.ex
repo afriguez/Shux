@@ -7,6 +7,8 @@ defmodule Shux.Bot.Handlers.MessageHandler do
     ticket: Commands.Ticket,
     profile: Commands.Profile,
     rank: Commands.Rank,
+    leaderboard: Commands.Leaderboard,
+    lb: Commands.Leaderboard,
     help: Commands.Help
   }
 

@@ -19,23 +19,15 @@ defmodule Shux.Bot.Commands.Leaderboard do
   def run(_perms, msg, _args) do
     users = Api.get_leaderboard!(msg.guild_id)
 
-    IO.inspect(users)
-
     leaderboard_img =
       Enum.reduce(users, [], fn user, acc ->
         discord_user = Discord.Api.user(user.id)
-        IO.inspect(discord_user)
         avatar = Discord.Api.user_avatar(discord_user)
         level = LevelXpConverter.xp_to_level(user.points)
 
         [{avatar, discord_user.username, user.points, level} | acc]
       end)
       |> Enum.reverse()
-
-    IO.inspect(leaderboard_img)
-
-    leaderboard_img =
-      leaderboard_img
       |> Leaderboard.build()
 
     Discord.Api.send_message(

@@ -11,6 +11,7 @@ defmodule Shux.Bot.Handlers.InteractionHandler do
     persistent_ticket: Interactions.Ticket,
     description: Interactions.Description,
     update_description: Interactions.Description,
+    rank_position: Interactions.Rank,
     profile: Interactions.Profile
   }
 

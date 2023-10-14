@@ -32,4 +32,26 @@ defmodule Shux.Bot.Components do
       emoji: Keyword.get(props, :emoji, nil)
     }
   end
+
+  def modal(props \\ []) do
+    %{
+      custom_id: Keyword.get(props, :custom_id, nil),
+      title: Keyword.get(props, :title, nil),
+      components: Keyword.get(props, :components, nil)
+    }
+  end
+
+  def text_input(props \\ []) do
+    %{
+      type: 4,
+      custom_id: Keyword.get(props, :custom_id, nil),
+      style: Keyword.get(props, :style, nil),
+      label: Keyword.get(props, :label, nil),
+      min_length: Keyword.get(props, :min_length, nil),
+      max_length: Keyword.get(props, :max_length, nil),
+      required: Keyword.get(props, :required, nil),
+      value: Keyword.get(props, :value, nil),
+      placeholder: Keyword.get(props, :placeholder, nil)
+    }
+  end
 end

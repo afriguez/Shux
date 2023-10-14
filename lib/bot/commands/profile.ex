@@ -63,6 +63,16 @@ defmodule Shux.Bot.Commands.Profile do
                 name: "blondytsundere",
                 id: "743640353978056724"
               }
+            ),
+            Components.button(
+              style: 3,
+              label: "Actualizar descripcion",
+              custom_id: "description-#{user.id}",
+              disabled: msg.author.id != user.id,
+              emoji: %{
+                name: "NoSe",
+                id: "748046020935680060"
+              }
             )
           ])
         ]

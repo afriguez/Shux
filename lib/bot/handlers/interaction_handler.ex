@@ -8,7 +8,8 @@ defmodule Shux.Bot.Handlers.InteractionHandler do
     banner: Interactions.Banner,
     ticket: Interactions.Ticket,
     close_ticket: Interactions.Ticket,
-    persistent_ticket: Interactions.Ticket
+    persistent_ticket: Interactions.Ticket,
+    profile: Interactions.Profile
   }
 
   def handle(data) do

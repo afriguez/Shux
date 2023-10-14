@@ -22,6 +22,13 @@ defmodule Shux.Discord.Api do
     Poison.decode!(response.body, %{keys: :atoms})
   end
 
+  def member(guild_id, user_id) do
+    %HTTPoison.Response{body: body} =
+      get!("/guilds/#{guild_id}/members/#{user_id}", headers())
+
+    Poison.decode!(body, %{keys: :atoms})
+  end
+
   def send_message(ch_id, content) when is_binary(content) do
     post(
       "/channels/#{ch_id}/messages",

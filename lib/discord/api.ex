@@ -67,7 +67,7 @@ defmodule Shux.Discord.Api do
     body =
       {:multipart,
        [
-         {"file", image, {"form-data", [name: "file", filename: "profile.png"]}, []}
+         {"file", image, {"form-data", [name: "file", filename: "file.png"]}, []}
        ]}
 
     post(
@@ -97,6 +97,24 @@ defmodule Shux.Discord.Api do
 
   def delete_channel(channel_id) when is_binary(channel_id),
     do: delete("/channels/#{channel_id}", headers())
+
+  def interaction_callback(interaction, response, image) do
+    body =
+      {:multipart,
+       [
+         {"json", Poison.encode!(response), {"form-data", [name: "payload_json"]}, []},
+         {"file", image, {"form-data", [name: "file", filename: "file.png"]}, []}
+       ]}
+
+    post(
+      "/interactions/#{interaction.id}/#{interaction.token}/callback",
+      body,
+      [
+        {"Authorization", "Bot " <> Application.get_env(:shux, :bot_token)},
+        {"Content-Type", "multipart/form-data"}
+      ]
+    )
+  end
 
   def interaction_callback(interaction, response) when is_map(response) do
     post(

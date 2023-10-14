@@ -4,53 +4,68 @@ defmodule Shux.Bot.Interactions.Avatar do
   alias Shux.Bot.Components
   alias Shux.Discord.Api
 
-  def run(%{data: %{custom_id: "profile_avatar"}} = interaction) do
-    user_id = interaction.member.user.id
-    avatar_url = user_avatar(user_id, interaction.member.user.avatar)
+  def run(interaction) do
+    response = run_avatar(interaction)
+    Api.interaction_callback(interaction, response)
+  end
 
-    response = %{
+  defp run_avatar(%{data: %{custom_id: "profile_avatar-" <> user_id}}) do
+    user = Api.user(user_id)
+    avatar_url = user_avatar(user_id, user.avatar)
+
+    %{
       type: 4,
       data: %{
         content: avatar_url,
         flags: 1 <<< 6,
-        components: components("avatar", avatar_url)
+        components: components("avatar-#{user_id}", avatar_url)
       }
     }
-
-    Api.interaction_callback(interaction, response)
   end
 
-  def run(%{data: %{custom_id: custom_id}} = interaction) do
-    user_id = interaction.member.user.id
+  defp run_avatar(%{data: %{custom_id: "member_avatar-" <> user_id}}) do
+    user = Api.user(user_id)
 
+    avatar_url = user_avatar(user_id, user.avatar)
+
+    %{
+      type: 7,
+      data: %{
+        content: avatar_url,
+        components: components("avatar-#{user_id}", avatar_url)
+      }
+    }
+  end
+
+  defp run_avatar(%{data: %{custom_id: "avatar-" <> user_id = custom_id}} = interaction) do
     guild_id = interaction.guild_id
-    member_has_avatar = interaction.member.avatar != nil
+    member = Api.member(guild_id, user_id)
+
+    member_has_avatar = member.avatar != nil
 
     {avatar_url, custom_id} =
-      if custom_id == "avatar" and member_has_avatar do
+      if String.starts_with?(custom_id, "avatar") and member_has_avatar do
         {
-          member_avatar(guild_id, user_id, interaction.member.avatar),
-          "member_avatar"
+          member_avatar(guild_id, user_id, member.avatar),
+          "member_avatar-#{user_id}"
         }
       else
         {
-          user_avatar(user_id, interaction.member.user.avatar),
-          "avatar"
+          user_avatar(user_id, member.user.avatar),
+          "avatar-#{user_id}"
         }
       end
 
-    response = %{
+    %{
       type: 7,
       data: %{
         content: avatar_url,
         components: components(custom_id, avatar_url)
       }
     }
-
-    Api.interaction_callback(interaction, response)
   end
 
-  def run(interaction) do
+  defp run_avatar(interaction) do
     has_resolved = Map.get(interaction.data, :resolved) != nil
 
     {user, member} =
@@ -72,15 +87,13 @@ defmodule Shux.Bot.Interactions.Avatar do
         user_avatar(user.id, user.avatar)
       end
 
-    response = %{
+    %{
       type: 4,
       data: %{
         content: avatar_url,
-        components: components("member_avatar", avatar_url)
+        components: components("member_avatar-#{user.id}", avatar_url)
       }
     }
-
-    Api.interaction_callback(interaction, response)
   end
 
   def components(custom_id, avatar_url) do

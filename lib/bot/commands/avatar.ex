@@ -29,7 +29,7 @@ defmodule Shux.Bot.Commands.Avatar do
           Components.button(
             style: 1,
             label: "Actualizar",
-            custom_id: "avatar",
+            custom_id: "avatar-#{user.id}",
             emoji: %{
               name: "🖼️",
               animated: false

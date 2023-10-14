@@ -50,7 +50,7 @@ defmodule Shux.Bot.Commands.Profile do
             Components.button(
               style: 1,
               label: "Avatar",
-              custom_id: "profile_avatar",
+              custom_id: "profile_avatar-#{user.id}",
               emoji: %{
                 name: "🖼️"
               }
@@ -58,7 +58,7 @@ defmodule Shux.Bot.Commands.Profile do
             Components.button(
               style: 1,
               label: "Banner",
-              custom_id: "banner",
+              custom_id: "banner-#{user.id}",
               emoji: %{
                 name: "blondytsundere",
                 id: "743640353978056724"

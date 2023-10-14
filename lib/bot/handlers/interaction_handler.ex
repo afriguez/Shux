@@ -14,10 +14,13 @@ defmodule Shux.Bot.Handlers.InteractionHandler do
   def handle(data) do
     name =
       if Map.get(data.data, :custom_id) != nil do
-        String.to_atom(data.data.custom_id)
+        data.data.custom_id
       else
-        String.to_atom(String.downcase(data.data.name))
+        String.downcase(data.data.name)
       end
+
+    [h | _t] = String.split(name, "-")
+    name = String.to_atom(h)
 
     interaction = Map.get(@interactions, name)
 

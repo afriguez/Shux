@@ -18,12 +18,11 @@ defmodule Shux.Bot.Commands.Profile do
   def run(_perms, msg, _args) do
     user = if Enum.empty?(msg.mentions), do: msg.author, else: hd(msg.mentions)
 
-    {:ok,
-     %{
-       points: points,
-       warnings: warns,
-       description: desc
-     }} = Api.get_user(user.id)
+    %{
+      points: points,
+      warnings: warns,
+      description: desc
+    } = Api.get_user!(user.id)
 
     username = user.username
     level = LevelXpConverter.xp_to_level(points)
@@ -41,39 +40,17 @@ defmodule Shux.Bot.Commands.Profile do
         }
       )
 
+    disabled = msg.author.id != user.id
+
     Discord.Api.send_message(
       msg.channel_id,
       %{
         content: "",
         components: [
           Components.action_row([
-            Components.button(
-              style: 1,
-              label: "Avatar",
-              custom_id: "profile_avatar-#{user.id}",
-              emoji: %{
-                name: "🖼️"
-              }
-            ),
-            Components.button(
-              style: 1,
-              label: "Banner",
-              custom_id: "banner-#{user.id}",
-              emoji: %{
-                name: "blondytsundere",
-                id: "743640353978056724"
-              }
-            ),
-            Components.button(
-              style: 3,
-              label: "Actualizar descripcion",
-              custom_id: "description-#{user.id}",
-              disabled: msg.author.id != user.id,
-              emoji: %{
-                name: "NoSe",
-                id: "748046020935680060"
-              }
-            )
+            Components.profile_avatar_btn(user.id),
+            Components.banner_btn(user.id),
+            Components.description_btn(user.id, disabled)
           ])
         ]
       },

@@ -26,20 +26,8 @@ defmodule Shux.Bot.Commands.Avatar do
       content: content,
       components: [
         Components.action_row([
-          Components.button(
-            style: 1,
-            label: "Actualizar",
-            custom_id: "avatar-#{user.id}",
-            emoji: %{
-              name: "🖼️",
-              animated: false
-            }
-          ),
-          Components.button(
-            style: 5,
-            label: "Abrir original",
-            url: content
-          )
+          Components.avatar_btn(user.id),
+          Components.url_btn(content)
         ])
       ]
     })

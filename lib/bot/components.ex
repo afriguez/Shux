@@ -15,6 +15,62 @@ defmodule Shux.Bot.Components do
     }
   end
 
+  def profile_avatar_btn(user_id) do
+    button(
+      style: 1,
+      label: "Avatar",
+      custom_id: "profile_avatar-#{user_id}",
+      emoji: %{
+        name: "🖼️"
+      }
+    )
+  end
+
+  def avatar_btn(user_id) do
+    button(
+      style: 1,
+      label: "Actualizar",
+      custom_id: "avatar-#{user_id}",
+      emoji: %{
+        name: "🖼️",
+        animated: false
+      }
+    )
+  end
+
+  def banner_btn(user_id) do
+    button(
+      style: 1,
+      label: "Banner",
+      custom_id: "banner-#{user_id}",
+      emoji: %{
+        name: "blondytsundere",
+        id: "743640353978056724"
+      }
+    )
+  end
+
+  def description_btn(user_id, disabled) do
+    button(
+      style: 3,
+      label: "Actualizar descripcion",
+      custom_id: "description-#{user_id}",
+      disabled: disabled,
+      emoji: %{
+        name: "NoSe",
+        id: "748046020935680060"
+      }
+    )
+  end
+
+  def url_btn(url) do
+    button(
+      style: 5,
+      label: "Abrir original",
+      url: url
+    )
+  end
+
   def string_select(props \\ []) do
     %{
       type: 3,

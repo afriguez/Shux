@@ -42,39 +42,17 @@ defmodule Shux.Bot.Interactions.Profile do
         }
       )
 
+    disabled = target_id != interaction.member.user.id
+
     response = %{
       type: 4,
       data: %{
         content: "",
         components: [
           Components.action_row([
-            Components.button(
-              style: 1,
-              label: "Avatar",
-              custom_id: "profile_avatar-#{user.id}",
-              emoji: %{
-                name: "🖼️"
-              }
-            ),
-            Components.button(
-              style: 1,
-              label: "Banner",
-              custom_id: "banner-#{user.id}",
-              emoji: %{
-                name: "blondytsundere",
-                id: "743640353978056724"
-              }
-            ),
-            Components.button(
-              style: 3,
-              label: "Actualizar descripcion",
-              custom_id: "description-#{user.id}",
-              disabled: target_id != interaction.member.user.id,
-              emoji: %{
-                name: "NoSe",
-                id: "748046020935680060"
-              }
-            )
+            Components.avatar_btn(user.id),
+            Components.banner_btn(user.id),
+            Components.description_btn(user.id, disabled)
           ])
         ]
       }

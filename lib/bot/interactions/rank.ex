@@ -1,6 +1,7 @@
 defmodule Shux.Bot.Interactions.Rank do
   import Bitwise
 
+  alias Shux.Bot.Components
   alias Shux.Bot.Leveling.LevelXpConverter
   alias Shux.ImageBuilder
   alias Shux.Api
@@ -57,7 +58,13 @@ defmodule Shux.Bot.Interactions.Rank do
     response = %{
       type: 4,
       data: %{
-        content: ""
+        content: "",
+        components: [
+          Components.action_row([
+            Components.avatar_btn(user.id),
+            Components.banner_btn(user.id)
+          ])
+        ]
       }
     }
 

@@ -12,6 +12,7 @@ defmodule Shux.Bot.Handlers.InteractionHandler do
     description: Interactions.Description,
     update_description: Interactions.Description,
     rank_position: Interactions.Rank,
+    rank: Interactions.Rank,
     profile: Interactions.Profile
   }
 

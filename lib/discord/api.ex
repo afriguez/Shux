@@ -15,16 +15,23 @@ defmodule Shux.Discord.Api do
   end
 
   def user(user_id) do
-    {:ok, response} =
-      Task.async(fn -> get("/users/#{user_id}", headers()) end)
-      |> Task.await()
+    %HTTPoison.Response{body: body} = get!("/users/#{user_id}", headers())
 
-    Poison.decode!(response.body, %{keys: :atoms})
+    Poison.decode!(body, %{keys: :atoms})
   end
 
   def member(guild_id, user_id) do
     %HTTPoison.Response{body: body} =
       get!("/guilds/#{guild_id}/members/#{user_id}", headers())
+
+    Poison.decode!(body, %{keys: :atoms})
+  end
+
+  def global_commands() do
+    app_id = Application.get_env(:shux, :app_id)
+
+    %HTTPoison.Response{body: body} =
+      get!("/applications/#{app_id}/commands", headers())
 
     Poison.decode!(body, %{keys: :atoms})
   end
@@ -50,7 +57,7 @@ defmodule Shux.Discord.Api do
       {:multipart,
        [
          {"json", Poison.encode!(message), {"form-data", [name: "payload_json"]}, []},
-         {"file", image, {"form-data", [name: "file", filename: "profile.png"]}, []}
+         {"file", image, {"form-data", [name: "file", filename: "file.png"]}, []}
        ]}
 
     post(
@@ -122,5 +129,28 @@ defmodule Shux.Discord.Api do
       Poison.encode!(response),
       headers()
     )
+  end
+
+  def register_command(name, description, options) do
+    app_id = Application.get_env(:shux, :app_id)
+
+    command = %{
+      name: name,
+      description: description,
+      options: options,
+      dm_permission: false,
+      type: 1
+    }
+
+    post(
+      "/applications/#{app_id}/commands",
+      Poison.encode!(command),
+      headers()
+    )
+  end
+
+  def delete_command(cmd_id) do
+    app_id = Application.get_env(:shux, :app_id)
+    delete("/applications/#{app_id}/commands/#{cmd_id}", headers())
   end
 end

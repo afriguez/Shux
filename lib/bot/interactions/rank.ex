@@ -61,7 +61,7 @@ defmodule Shux.Bot.Interactions.Rank do
         content: "",
         components: [
           Components.action_row([
-            Components.avatar_btn(user.id),
+            Components.profile_avatar_btn(user.id),
             Components.banner_btn(user.id)
           ])
         ]

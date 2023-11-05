@@ -1,6 +1,8 @@
 defmodule Shux.Discord.Api do
   use HTTPoison.Base
 
+  alias Shux.Discord.Cache
+
   @endpoint "https://discord.com/api/v10"
 
   def headers do
@@ -15,25 +17,58 @@ defmodule Shux.Discord.Api do
   end
 
   def user(user_id) do
+    case Cache.get_user(user_id) do
+      nil -> fetch_user(user_id)
+      user -> user
+    end
+  end
+
+  def fetch_user(user_id) do
     %HTTPoison.Response{body: body} = get!("/users/#{user_id}", headers())
 
-    Poison.decode!(body, %{keys: :atoms})
+    user = Poison.decode!(body, %{keys: :atoms})
+    Cache.put_user(user)
+
+    user
   end
 
   def member(guild_id, user_id) do
+    case Cache.get_member(guild_id, user_id) do
+      nil ->
+        fetch_member(guild_id, user_id)
+
+      member ->
+        member
+    end
+  end
+
+  def fetch_member(guild_id, user_id) do
     %HTTPoison.Response{body: body} =
       get!("/guilds/#{guild_id}/members/#{user_id}", headers())
 
-    Poison.decode!(body, %{keys: :atoms})
+    member = Poison.decode!(body, %{keys: :atoms})
+    Cache.put_member(guild_id, member)
+
+    member
   end
 
   def global_commands() do
+    case Cache.get_commands() do
+      nil -> fetch_global_commands()
+      cmds -> cmds
+    end
+  end
+
+  def fetch_global_commands() do
     app_id = Application.get_env(:shux, :app_id)
 
     %HTTPoison.Response{body: body} =
       get!("/applications/#{app_id}/commands", headers())
 
-    Poison.decode!(body, %{keys: :atoms})
+    cmds = Poison.decode!(body, %{keys: :atoms})
+    Cache.put_commands(cmds)
+
+    cmds
   end
 
   def send_message(ch_id, content) when is_binary(content) do

@@ -9,7 +9,9 @@ defmodule Shux.Bot.Handlers.MessageHandler do
     rank: Commands.Rank,
     leaderboard: Commands.Leaderboard,
     lb: Commands.Leaderboard,
-    help: Commands.Help
+    help: Commands.Help,
+    inventory: Commands.Inventory,
+    inv: Commands.Inventory
   }
 
   def handle(data) do

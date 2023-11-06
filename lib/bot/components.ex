@@ -15,6 +15,24 @@ defmodule Shux.Bot.Components do
     }
   end
 
+  def inventory_btn(disabled \\ false) do
+    button(
+      style: 1,
+      label: "Inventario",
+      custom_id: "inventory",
+      disabled: disabled
+    )
+  end
+
+  def list_colors_btn(disabled \\ false) do
+    button(
+      style: 1,
+      label: "Lista de colores",
+      custom_id: "list_colors",
+      disabled: disabled
+    )
+  end
+
   def profile_avatar_btn(user_id) do
     button(
       style: 1,

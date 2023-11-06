@@ -17,8 +17,8 @@ defmodule Shux.Discord.Cache do
     put(:cmds, commands)
   end
 
-  def put_leaderboard(guild_id, url) do
-    put({:lb, guild_id}, url)
+  def put_leaderboard(guild_id, image) do
+    put({:lb, guild_id}, image)
   end
 
   def put_member(guild_id, member) do

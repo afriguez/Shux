@@ -23,8 +23,8 @@ defmodule Shux.Bot.Commands.Leaderboard do
         leaderboard_img = build_leaderboard(msg.guild_id)
         send_attachment(msg, leaderboard_img)
 
-      url ->
-        send_url(msg.channel_id, url)
+      leaderboard_img ->
+        send_attachment(msg, leaderboard_img)
     end
 
     {:ok, nil}
@@ -45,28 +45,16 @@ defmodule Shux.Bot.Commands.Leaderboard do
   end
 
   defp send_attachment(msg, leaderboard_img) do
-    {:ok, response} =
-      Discord.Api.send_message(
-        msg.channel_id,
-        %{
-          content: "",
-          components: components()
-        },
-        leaderboard_img
-      )
+    Discord.Api.send_message(
+      msg.channel_id,
+      %{
+        content: "",
+        components: components()
+      },
+      leaderboard_img
+    )
 
-    %HTTPoison.Response{body: body} = response
-    body = Poison.decode!(body, %{keys: :atoms})
-    leaderboard = hd(body.attachments)
-
-    Cache.put_leaderboard(msg.guild_id, leaderboard.url)
-  end
-
-  defp send_url(channel_id, url) do
-    Discord.Api.send_message(channel_id, %{
-      content: url,
-      components: components()
-    })
+    Cache.put_leaderboard(msg.guild_id, leaderboard_img)
   end
 
   defp components() do

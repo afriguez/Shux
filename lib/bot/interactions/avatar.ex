@@ -1,6 +1,7 @@
 defmodule Shux.Bot.Interactions.Avatar do
   import Bitwise
 
+  alias Shux.Discord.Cache
   alias Shux.Bot.Components
   alias Shux.Discord.Api
 
@@ -86,6 +87,9 @@ defmodule Shux.Bot.Interactions.Avatar do
       else
         user_avatar(user.id, user.avatar)
       end
+
+    Cache.put_user(user)
+    Cache.put_member(interaction.data.guild_id, member)
 
     %{
       type: 4,

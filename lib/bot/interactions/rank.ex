@@ -1,6 +1,8 @@
 defmodule Shux.Bot.Interactions.Rank do
   import Bitwise
 
+  alias Hex.Netrc.Cache
+  alias Shux.Discord.Cache
   alias Shux.Bot.Components
   alias Shux.Bot.Leveling.LevelXpConverter
   alias Shux.ImageBuilder
@@ -10,6 +12,9 @@ defmodule Shux.Bot.Interactions.Rank do
   def run(%{data: %{custom_id: "rank_position"}, member: member} = interaction) do
     user = member.user
     rank = Api.get_rank!(user.id)
+
+    Cache.put_user(user)
+    Cache.put_member(interaction.data.guild_id, member)
 
     response = %{
       type: 4,
@@ -32,6 +37,9 @@ defmodule Shux.Bot.Interactions.Rank do
       else
         interaction.member.user
       end
+
+    Cache.put_user(user)
+    Cache.put_member(interaction.data.guild_id, interaction.member)
 
     target_id =
       if Map.get(interaction.data, :target_id) != nil do

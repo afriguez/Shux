@@ -1,4 +1,5 @@
 defmodule Shux.Bot.Interactions.Profile do
+  alias Shux.Discord.Cache
   alias Shux.Bot.Leveling.LevelXpConverter
   alias Shux.ImageBuilder
   alias Shux.Api
@@ -16,6 +17,9 @@ defmodule Shux.Bot.Interactions.Profile do
       else
         interaction.member.user
       end
+
+    Cache.put_user(user)
+    Cache.put_member(interaction.data.guild_id, interaction.member)
 
     target_id =
       if Map.get(interaction.data, :target_id) != nil do

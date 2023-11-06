@@ -1,6 +1,7 @@
 defmodule Shux.Discord.Gateway.Client do
   use WebSockex
 
+  alias Shux.Discord.Cache
   alias Shux.Discord.Gateway.Intents
   alias Shux.Discord.Gateway.Heartbeat
   alias Shux.Bot.Handlers.MessageHandler
@@ -88,8 +89,21 @@ defmodule Shux.Discord.Gateway.Client do
     {:ok, state}
   end
 
+  defp handle_event(:GUILD_CREATE, data) do
+    Cache.put_guild(data.id, data)
+  end
+
   defp handle_event(:MESSAGE_CREATE, data) do
-    MessageHandler.handle(data)
+    case data do
+      %{author: %{bot: true}} ->
+        nil
+
+      %{webhook_id: _webhook_id} ->
+        nil
+
+      data ->
+        MessageHandler.handle(data)
+    end
   end
 
   defp handle_event(:MESSAGE_UPDATE, data) do

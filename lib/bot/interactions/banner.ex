@@ -6,6 +6,11 @@ defmodule Shux.Bot.Interactions.Banner do
   def run(%{data: %{custom_id: "banner-" <> user_id}} = interaction) do
     user = Api.user(user_id)
 
+    user =
+      if !Map.has_key?(user, :banner),
+        do: Api.fetch_user(user_id),
+        else: user
+
     if !user.banner do
       Api.interaction_callback(interaction, %{
         type: 4,

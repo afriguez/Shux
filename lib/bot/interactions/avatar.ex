@@ -83,13 +83,21 @@ defmodule Shux.Bot.Interactions.Avatar do
 
     avatar_url =
       if member.avatar != nil do
-        member_avatar(interaction.data.guild_id, user.id, member.avatar)
+        member_avatar(interaction.guild_id, user.id, member.avatar)
       else
         user_avatar(user.id, user.avatar)
       end
 
     Cache.put_user(user)
-    Cache.put_member(interaction.data.guild_id, member)
+
+    member =
+      if Map.get(member, :user) == nil do
+        Map.put(member, :user, user)
+      else
+        member
+      end
+
+    Cache.put_member(interaction.guild_id, member)
 
     %{
       type: 4,

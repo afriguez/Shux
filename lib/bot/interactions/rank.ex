@@ -14,7 +14,7 @@ defmodule Shux.Bot.Interactions.Rank do
     rank = Api.get_rank!(user.id)
 
     Cache.put_user(user)
-    Cache.put_member(interaction.data.guild_id, member)
+    Cache.put_member(interaction.guild_id, member)
 
     response = %{
       type: 4,
@@ -39,7 +39,7 @@ defmodule Shux.Bot.Interactions.Rank do
       end
 
     Cache.put_user(user)
-    Cache.put_member(interaction.data.guild_id, interaction.member)
+    Cache.put_member(interaction.guild_id, interaction.member)
 
     target_id =
       if Map.get(interaction.data, :target_id) != nil do

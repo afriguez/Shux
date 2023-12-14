@@ -1,8 +1,8 @@
 defmodule Shux.Discord.Gateway.Client do
   use WebSockex
 
+  alias Shux.Discord.BitValues
   alias Shux.Discord.Cache
-  alias Shux.Discord.Gateway.Intents
   alias Shux.Discord.Gateway.Heartbeat
   alias Shux.Bot.Handlers.MessageHandler
   alias Shux.Bot.Handlers.InteractionHandler
@@ -123,7 +123,7 @@ defmodule Shux.Discord.Gateway.Client do
 
   def identify do
     intents =
-      Intents.value([
+      BitValues.value_of(:intents, [
         :guilds,
         :guild_messages,
         :guild_message_reactions,

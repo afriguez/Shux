@@ -9,6 +9,10 @@ defmodule Shux do
         id: Shux.Discord.Gateway.Client,
         start: {Shux.Discord.Gateway.Client, :start_link, []}
       },
+      %{
+        id: Shux.ApiSessionScheduler,
+        start: {Shux.ApiSessionScheduler, :start_link, []}
+      },
       {Cachex,
        name: :shux_cache,
        stats: true,

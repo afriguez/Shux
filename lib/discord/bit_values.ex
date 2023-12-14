@@ -10,12 +10,12 @@ defmodule Shux.Discord.BitValues do
   end
 
   defp value(keys, map) do
-    Enum.reduce(map, 0, fn {k, v}, acc ->
-      if Enum.find(keys, &(&1 == k)), do: acc + v, else: acc
+    Enum.reduce(keys, 0, fn key, acc ->
+      Map.get(map, key, 0) + acc
     end)
   end
 
-  defp permissions do
+  defp intents do
     %{
       guilds: 1 <<< 0,
       guild_members: 1 <<< 1,
@@ -39,7 +39,7 @@ defmodule Shux.Discord.BitValues do
     }
   end
 
-  defp intents do
+  defp permissions do
     %{
       view_channel: 1 <<< 10,
       send_messages: 1 <<< 11,

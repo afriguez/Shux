@@ -10,7 +10,7 @@ defmodule Shux.Discord.Cache do
   end
 
   def put_guild(guild_id, guild) do
-    put({:guild, guild_id}, guild)
+    Cachex.put(@cache, {:guild, guild_id}, guild)
   end
 
   def put_commands(commands) do
@@ -22,10 +22,7 @@ defmodule Shux.Discord.Cache do
   end
 
   def put_member(guild_id, member) do
-    Cachex.get_and_update(@cache, {:member, guild_id}, fn
-      nil -> {:commit, %{member.user.id => member}}
-      members -> {:commit, Map.put(members, member.user.id, member)}
-    end)
+    put({:member, guild_id, member.user.id}, member)
   end
 
   def get_user(user_id) do
@@ -37,10 +34,7 @@ defmodule Shux.Discord.Cache do
   end
 
   def get_member(guild_id, user_id) do
-    case Cachex.get!(@cache, {:member, guild_id}) do
-      nil -> nil
-      members -> Map.get(members, user_id)
-    end
+    Cachex.get!(@cache, {:member, guild_id, user_id})
   end
 
   def get_commands() do

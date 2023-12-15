@@ -22,14 +22,20 @@ defmodule Shux.ImageBuilder.Rank do
 
   defp compose_bar(img, points) do
     width_scale = LevelXpConverter.level_percentage(points)
-    w = floor(397 * width_scale)
-    h = 27
 
-    bar =
-      Image.new!(w, h, color: :white)
-      |> Image.rounded!(radius: 14)
+    if width_scale == 0 do
+      img
+    else
+      w = floor(397 * width_scale)
+      w = if w < 10, do: 10, else: w
+      h = 27
 
-    Image.compose!(img, bar, x: 180, y: 63)
+      bar =
+        Image.new!(w, h, color: :white)
+        |> Image.rounded!(radius: 14)
+
+      Image.compose!(img, bar, x: 180, y: 63)
+    end
   end
 
   defp compose_text(img, {username, points, level, rank}) do
@@ -39,16 +45,36 @@ defmodule Shux.ImageBuilder.Rank do
     rank = Integer.to_string(rank)
 
     {:ok, t_username} =
-      Image.Text.text(username, font: font, font_size: 22, text_fill_color: :black, font_weight: 600)
+      Image.Text.text(username,
+        font: font,
+        font_size: 22,
+        text_fill_color: :black,
+        font_weight: 600
+      )
 
     {:ok, t_points} =
-      Image.Text.text("Puntos: " <> points, font: font, font_size: 18, text_fill_color: :black, font_weight: 600)
+      Image.Text.text("Puntos: " <> points,
+        font: font,
+        font_size: 18,
+        text_fill_color: :black,
+        font_weight: 600
+      )
 
     {:ok, t_level} =
-      Image.Text.text("Nivel: " <> level, font: font, font_size: 18, text_fill_color: :black, font_weight: 600)
+      Image.Text.text("Nivel: " <> level,
+        font: font,
+        font_size: 18,
+        text_fill_color: :black,
+        font_weight: 600
+      )
 
     {:ok, t_rank} =
-      Image.Text.text("#" <> rank, font: font, font_size: 30, text_fill_color: :black, font_weight: 600)
+      Image.Text.text("#" <> rank,
+        font: font,
+        font_size: 30,
+        text_fill_color: :black,
+        font_weight: 600
+      )
 
     [
       {t_username, 184, 26},

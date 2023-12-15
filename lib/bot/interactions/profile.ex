@@ -28,11 +28,17 @@ defmodule Shux.Bot.Interactions.Profile do
         user.id
       end
 
-    %{points: points, warnings: warns, description: desc} = Api.get_user!(target_id)
+    %{points: points, warnings: warns, description: desc} =
+      Api.get_user(interaction.guild_id, target_id)
 
     username = user.username
     level = LevelXpConverter.xp_to_level(points)
     avatar = Discord.Api.user_avatar(user)
+
+    desc =
+      if desc && desc != "",
+        do: desc,
+        else: "Oops! No tienes descripcion!"
 
     image =
       ImageBuilder.Profile.build(

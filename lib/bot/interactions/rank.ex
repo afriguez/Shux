@@ -48,7 +48,7 @@ defmodule Shux.Bot.Interactions.Rank do
         user.id
       end
 
-    %{points: points} = Api.get_user!(target_id)
+    %{points: points} = Api.get_user(interaction.guild_id, target_id)
     rank = Api.get_rank!(target_id)
 
     username = user.username

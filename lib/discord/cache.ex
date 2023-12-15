@@ -44,4 +44,12 @@ defmodule Shux.Discord.Cache do
   def get_leaderboard(guild_id) do
     Cachex.get!(@cache, {:lb, guild_id})
   end
+
+  def put_tokens(tokens) do
+    Cachex.put(@cache, :tokens, tokens)
+  end
+
+  def get_tokens() do
+    Cachex.get!(@cache, :tokens)
+  end
 end

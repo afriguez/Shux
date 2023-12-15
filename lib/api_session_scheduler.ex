@@ -2,6 +2,7 @@ defmodule Shux.ApiSessionScheduler do
   use GenServer
 
   alias Shux.Api
+  alias Shux.Discord.Cache
 
   def start_link(opts \\ []) do
     GenServer.start_link(__MODULE__, nil, opts)
@@ -21,6 +22,8 @@ defmodule Shux.ApiSessionScheduler do
       else
         Api.login()
       end
+
+    Cache.put_tokens({access_token, refresh_token})
 
     timer_ref = Process.send_after(self(), :refresh, 19 * 60_000)
 

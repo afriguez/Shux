@@ -18,12 +18,11 @@ defmodule Shux.Bot.Commands.Rank do
   def run(_perms, msg, _args) do
     user = if Enum.empty?(msg.mentions), do: msg.author, else: hd(msg.mentions)
 
-    points = Api.get_user(msg.guild_id, user.id).points
+    %{rank: rank, points: points} = Api.get_rank(msg.guild_id, user.id)
 
     username = user.username
     level = LevelXpConverter.xp_to_level(points)
     avatar = Discord.Api.user_avatar(user)
-    rank = Api.get_rank!(user.id)
 
     image =
       Rank.build(

@@ -85,4 +85,12 @@ defmodule Shux.Api do
   def set_description(guild_id, user_id, description) do
     update_user(guild_id, user_id, %{description: description})
   end
+
+  def get_rank(guild_id, user_id) do
+    route = "/servers/#{guild_id}/users/#{user_id}/rank"
+    %HTTPoison.Response{body: res_body} = get!(route, headers())
+
+    %{data: %{user: user}} = res_body |> Poison.decode!(%{keys: :atoms})
+    user
+  end
 end

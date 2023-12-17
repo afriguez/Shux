@@ -22,4 +22,11 @@ defmodule Shux.Api do
       {"Content-Type", "application/json"}
     ]
   end
+
+  def parse_env(var) do
+    case Regex.run(~r/'(.*)'/, var) do
+      [_, content] -> content
+      _ -> var
+    end
+  end
 end

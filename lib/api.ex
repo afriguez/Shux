@@ -34,6 +34,14 @@ defmodule Shux.Api do
     {access, refresh}
   end
 
+  def refresh(token) do
+    post_body = %{token: token} |> Poison.encode!()
+    %HTTPoison.Response{body: res_body} = post!("/auth/refresh", post_body, initial_headers())
+    %{"accessToken" => access, "refreshToken" => refresh} = (res_body |> Poison.decode!())["data"]
+
+    {access, refresh}
+  end
+
   def parse_env(var) do
     case Regex.run(~r/'(.*)'/, var) do
       [_, content] -> content

@@ -1,7 +1,20 @@
+defmodule Shux.Api.User do
+  defstruct [
+    :description,
+    points: 0,
+    show_level: false,
+    warnings: 0,
+    warnings_record: [],
+    beta: false,
+    tickets: 0
+  ]
+end
+
 defmodule Shux.Api do
   use HTTPoison.Base
 
   alias Shux.Discord.Cache
+  alias Shux.Api.User
 
   @endpoint "https://shux.adrephos.com/api/v1"
 
@@ -47,5 +60,25 @@ defmodule Shux.Api do
       [_, content] -> content
       _ -> var
     end
+  end
+
+  def get_user(guild_id, user_id) do
+    route = "/servers/#{guild_id}/users/#{user_id}"
+    %HTTPoison.Response{body: res_body} = get!(route, headers())
+
+    case Poison.decode!(res_body, %{keys: :atoms}) do
+      %{success: true, data: user} -> struct(User, user)
+      _ -> update_user(guild_id, user_id, %User{})
+    end
+  end
+
+  def update_user(guild_id, user_id, user) do
+    user = user |> Poison.encode!()
+
+    route = "/servers/#{guild_id}/users/#{user_id}"
+    %HTTPoison.Response{body: res_body} = post!(route, user, headers())
+
+    %{success: true} = res_body |> Poison.decode!(%{keys: :atoms})
+    user
   end
 end

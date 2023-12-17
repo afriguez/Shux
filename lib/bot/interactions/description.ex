@@ -14,9 +14,10 @@ defmodule Shux.Bot.Interactions.Description do
          data: %{
            custom_id: "update_description-" <> user_id,
            components: [%{components: [%{value: description}]}]
-         }
+         },
+         guild_id: guild_id
        }) do
-    Api.set_description!(user_id, description)
+    Api.set_description(guild_id, user_id, description)
 
     %{
       type: 4,
@@ -29,9 +30,9 @@ defmodule Shux.Bot.Interactions.Description do
 
   defp run_desc(%{
          data: %{custom_id: "description-" <> user_id},
-         member: %{user: id}
+         member: %{user: %{id: id}}
        })
-       when id == user_id do
+       when id != user_id do
     %{
       type: 4,
       data: %{
@@ -57,7 +58,7 @@ defmodule Shux.Bot.Interactions.Description do
                 placeholder: "descripcion",
                 required: true,
                 min_length: 1,
-                max_length: 600
+                max_length: 250
               )
             ])
           ]

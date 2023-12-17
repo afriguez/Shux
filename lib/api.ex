@@ -81,4 +81,8 @@ defmodule Shux.Api do
     %{success: true} = res_body |> Poison.decode!(%{keys: :atoms})
     user
   end
+
+  def set_description(guild_id, user_id, description) do
+    update_user(guild_id, user_id, %{description: description})
+  end
 end

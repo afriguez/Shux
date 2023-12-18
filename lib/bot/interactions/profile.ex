@@ -36,6 +36,7 @@ defmodule Shux.Bot.Interactions.Profile do
      }} =
       Api.get_user(interaction.guild_id, target_id)
 
+    points = floor(points)
     username = user.username
     level = LevelXpConverter.xp_to_level(points)
     avatar = Discord.Api.user_avatar(user)

@@ -8,7 +8,7 @@ defmodule Shux.Bot.Interactions.Inventory do
     {:ok, user} = Api.get_user(interaction.guild_id, interaction.member.user.id)
 
     points = user.points
-    colors = split_colors(points)
+    colors = split_colors(interaction.guild_id, points)
     response = run_inv(interaction, colors)
 
     Discord.Api.interaction_callback(interaction, response)
@@ -76,8 +76,10 @@ defmodule Shux.Bot.Interactions.Inventory do
     }
   end
 
-  defp split_colors(points) do
-    Api.list_colors()
+  defp split_colors(guild_id, points) do
+    {:ok, colors} = Api.get_colors(guild_id)
+
+    colors
     |> Enum.reduce(%{locked: [], unlocked: []}, fn color, acc ->
       if LevelXpConverter.xp_to_level(points) >= color.level do
         %{acc | unlocked: [color | acc.unlocked]}

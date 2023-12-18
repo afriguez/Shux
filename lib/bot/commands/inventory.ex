@@ -20,7 +20,7 @@ defmodule Shux.Bot.Commands.Inventory do
     {:ok, api_user} = Api.get_user(msg.guild_id, user.id)
 
     points = api_user.points
-    colors = filter_colors(points)
+    colors = filter_colors(msg.guild_id, points)
     message = build_message(colors)
 
     Discord.Api.send_message(msg.channel_id, message)
@@ -28,8 +28,10 @@ defmodule Shux.Bot.Commands.Inventory do
     {:ok, nil}
   end
 
-  defp filter_colors(points) do
-    Api.list_colors!()
+  defp filter_colors(guild_id, points) do
+    {:ok, colors} = Api.get_colors(guild_id)
+
+    colors
     |> Enum.reduce(%{locked: [], unlocked: []}, fn color, acc ->
       if LevelXpConverter.xp_to_level(points) >= color.level do
         %{acc | unlocked: [color | acc.unlocked]}

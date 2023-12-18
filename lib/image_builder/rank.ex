@@ -40,6 +40,8 @@ defmodule Shux.ImageBuilder.Rank do
 
   defp compose_text(img, {username, points, level, rank}) do
     font = "Poppins"
+    points = floor(points)
+
     points = Integer.to_string(points)
     level = Integer.to_string(level)
     rank = Integer.to_string(rank)

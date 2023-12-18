@@ -1,4 +1,6 @@
 defmodule Shux.Bot.Handlers.MessageHandler do
+  alias Shux.Api
+  alias Shux.Bot.Leveling.XpCalculator
   alias Shux.Bot.Commands
 
   @commands %{
@@ -16,6 +18,18 @@ defmodule Shux.Bot.Handlers.MessageHandler do
 
   def handle(data) do
     content = data.content
+    xp = XpCalculator.calculate(content)
+
+    guild_id = data.guild_id
+    user_id = data.author.id
+
+    {:ok, api_user} = Api.get_user(guild_id, user_id)
+
+    Api.update_user(
+      guild_id,
+      user_id,
+      %{points: api_user.points + xp}
+    )
 
     if is_command?(content) do
       [command | args] = parse_content(content)

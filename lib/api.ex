@@ -109,4 +109,13 @@ defmodule Shux.Api do
       error -> error
     end
   end
+
+  def get_roles(guild_id) do
+    route = "/servers/#{guild_id}/roles"
+
+    case get!(route, headers()) |> handle_response() do
+      {:ok, data} -> {:ok, data}
+      error -> error
+    end
+  end
 end

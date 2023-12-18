@@ -18,11 +18,12 @@ defmodule Shux.Bot.Commands.Profile do
   def run(_perms, msg, _args) do
     user = if Enum.empty?(msg.mentions), do: msg.author, else: hd(msg.mentions)
 
-    %{
-      points: points,
-      warnings: warns,
-      description: desc
-    } = Api.get_user(msg.guild_id, user.id)
+    {:ok,
+     %{
+       points: points,
+       warnings: warns,
+       description: desc
+     }} = Api.get_user(msg.guild_id, user.id)
 
     username = user.username
     level = LevelXpConverter.xp_to_level(points)

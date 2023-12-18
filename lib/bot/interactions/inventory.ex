@@ -5,7 +5,7 @@ defmodule Shux.Bot.Interactions.Inventory do
   alias Shux.Discord
 
   def run(interaction) do
-    user = Api.get_user(interaction.guild_id, interaction.member.user.id)
+    {:ok, user} = Api.get_user(interaction.guild_id, interaction.member.user.id)
 
     points = user.points
     colors = split_colors(points)

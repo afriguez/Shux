@@ -62,24 +62,30 @@ defmodule Shux.Api do
     end
   end
 
+  def handle_response(%HTTPoison.Response{body: body}) do
+    case Poison.decode!(body, %{keys: :atoms}) do
+      %{success: true, data: data} -> {:ok, data}
+      %{success: false, error: reason} -> {:error, reason}
+    end
+  end
+
   def get_user(guild_id, user_id) do
     route = "/servers/#{guild_id}/users/#{user_id}"
-    %HTTPoison.Response{body: res_body} = get!(route, headers())
 
-    case Poison.decode!(res_body, %{keys: :atoms}) do
-      %{success: true, data: user} -> struct(User, user)
+    case get!(route, headers()) |> handle_response() do
+      {:ok, user} -> {:ok, struct(User, user)}
       _ -> update_user(guild_id, user_id, %User{})
     end
   end
 
   def update_user(guild_id, user_id, user) do
-    user = user |> Poison.encode!()
-
+    encoded_user = user |> Poison.encode!()
     route = "/servers/#{guild_id}/users/#{user_id}"
-    %HTTPoison.Response{body: res_body} = post!(route, user, headers())
 
-    %{success: true} = res_body |> Poison.decode!(%{keys: :atoms})
-    user
+    case post!(route, encoded_user, headers()) |> handle_response() do
+      {:ok, user} -> {:ok, struct(User, user)}
+      error -> error
+    end
   end
 
   def set_description(guild_id, user_id, description) do
@@ -88,9 +94,10 @@ defmodule Shux.Api do
 
   def get_rank(guild_id, user_id) do
     route = "/servers/#{guild_id}/users/#{user_id}/rank"
-    %HTTPoison.Response{body: res_body} = get!(route, headers())
 
-    %{data: %{user: user}} = res_body |> Poison.decode!(%{keys: :atoms})
-    user
+    case get!(route, headers()) |> handle_response() do
+      {:ok, data} -> {:ok, data.user}
+      error -> error
+    end
   end
 end

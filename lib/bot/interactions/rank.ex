@@ -11,7 +11,7 @@ defmodule Shux.Bot.Interactions.Rank do
 
   def run(%{data: %{custom_id: "rank_position"}, member: member} = interaction) do
     user = member.user
-    %{rank: rank, points: points} = Api.get_rank(interaction.guild_id, user.id)
+    {:ok, %{rank: rank, points: points}} = Api.get_rank(interaction.guild_id, user.id)
 
     Cache.put_user(user)
     Cache.put_member(interaction.guild_id, member)
@@ -48,7 +48,7 @@ defmodule Shux.Bot.Interactions.Rank do
         user.id
       end
 
-    %{rank: rank, points: points} = Api.get_rank(interaction.guild_id, target_id)
+    {:ok, %{rank: rank, points: points}} = Api.get_rank(interaction.guild_id, target_id)
 
     username = user.username
     level = LevelXpConverter.xp_to_level(points)

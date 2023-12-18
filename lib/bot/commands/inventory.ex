@@ -17,7 +17,7 @@ defmodule Shux.Bot.Commands.Inventory do
 
   def run(_perms, msg, _args) do
     user = if Enum.empty?(msg.mentions), do: msg.author, else: hd(msg.mentions)
-    api_user = Api.get_user(msg.guild_id, user.id)
+    {:ok, api_user} = Api.get_user(msg.guild_id, user.id)
 
     points = api_user.points
     colors = filter_colors(points)

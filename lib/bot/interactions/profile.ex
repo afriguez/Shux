@@ -28,7 +28,12 @@ defmodule Shux.Bot.Interactions.Profile do
         user.id
       end
 
-    %{points: points, warnings: warns, description: desc} =
+    {:ok,
+     %{
+       points: points,
+       warnings: warns,
+       description: desc
+     }} =
       Api.get_user(interaction.guild_id, target_id)
 
     username = user.username

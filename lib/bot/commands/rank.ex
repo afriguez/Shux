@@ -18,7 +18,7 @@ defmodule Shux.Bot.Commands.Rank do
   def run(_perms, msg, _args) do
     user = if Enum.empty?(msg.mentions), do: msg.author, else: hd(msg.mentions)
 
-    %{rank: rank, points: points} = Api.get_rank(msg.guild_id, user.id)
+    {:ok, %{rank: rank, points: points}} = Api.get_rank(msg.guild_id, user.id)
 
     username = user.username
     level = LevelXpConverter.xp_to_level(points)

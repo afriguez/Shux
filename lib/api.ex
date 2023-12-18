@@ -13,10 +13,18 @@ end
 defmodule Shux.Api do
   use HTTPoison.Base
 
+  import Bitwise
+
   alias Shux.Discord.Cache
   alias Shux.Api.User
 
   @endpoint "https://shux.adrephos.com/api/v1"
+  @roles %{
+    admin: 1 <<< 1,
+    mod: 1 <<< 2,
+    tech: 1 <<< 3,
+    colour: 1 <<< 5
+  }
 
   def process_url(url), do: @endpoint <> url
 
@@ -127,5 +135,21 @@ defmodule Shux.Api do
       {:ok, data} -> {:ok, data}
       error -> error
     end
+  end
+
+  def get_colors(guild_id) do
+    case get_roles(guild_id) do
+      {:ok, data} -> {:ok, filter_colors(data.roles)}
+      error -> error
+    end
+  end
+
+  defp filter_colors(roles) do
+    Enum.reduce(
+      roles,
+      [],
+      &if(&1.flags == @roles.colour, do: [&1 | &2], else: &2)
+    )
+    |> Enum.sort_by(& &1.level, :asc)
   end
 end

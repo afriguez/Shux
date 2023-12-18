@@ -25,7 +25,7 @@ defmodule Shux.ApiSessionScheduler do
 
     Cache.put_tokens({access_token, refresh_token})
 
-    timer_ref = Process.send_after(self(), :refresh, 19 * 60_000)
+    timer_ref = Process.send_after(self(), :refresh, 14 * 60_000)
 
     {:noreply,
      %{

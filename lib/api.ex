@@ -118,4 +118,14 @@ defmodule Shux.Api do
       error -> error
     end
   end
+
+  def post_role(guild_id, role_id, name, flags) do
+    role = Poison.encode!(%{name: name, flags: flags})
+    route = "/servers/#{guild_id}/roles/#{role_id}"
+
+    case post!(route, role, headers()) |> handle_response() do
+      {:ok, data} -> {:ok, data}
+      error -> error
+    end
+  end
 end

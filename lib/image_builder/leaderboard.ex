@@ -62,7 +62,7 @@ defmodule Shux.ImageBuilder.Leaderboard do
            font_weight: 600
          ),
          Image.Text.text!(
-           "Puntos: #{points}",
+           "Puntos: #{floor(points)}",
            font: font,
            font_size: 10,
            font_weight: 600

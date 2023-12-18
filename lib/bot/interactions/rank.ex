@@ -19,7 +19,7 @@ defmodule Shux.Bot.Interactions.Rank do
     response = %{
       type: 4,
       data: %{
-        content: "Estas en el rango **##{rank}** con **#{points}** puntos.",
+        content: "Estas en el rango **##{rank}** con **#{floor(points)}** puntos.",
         flags: 1 <<< 6
       }
     }

@@ -118,6 +118,27 @@ defmodule Shux.Api do
     end
   end
 
+  def get_tickets(guild_id) do
+    route = "/servers/#{guild_id}/tickets"
+
+    case get!(route, headers()) |> handle_response() do
+      {:ok, data} -> {:ok, data.tickets}
+      error -> error
+    end
+  end
+
+  def post_ticket(guild_id, user_id, channel_id) do
+    route = "/servers/#{guild_id}/tickets"
+
+    {:ok, tickets} = get_tickets(guild_id)
+    tickets = Map.put(tickets, user_id, channel_id) |> Poison.encode!()
+
+    case post!(route, tickets, headers()) |> handle_response() do
+      {:ok, data} -> {:ok, data.tickets}
+      error -> error
+    end
+  end
+
   def get_roles(guild_id) do
     route = "/servers/#{guild_id}/roles"
 

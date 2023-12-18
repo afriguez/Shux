@@ -100,4 +100,13 @@ defmodule Shux.Api do
       error -> error
     end
   end
+
+  def get_leaderboard(guild_id) do
+    route = "/servers/#{guild_id}/leaderboard"
+
+    case get!(route, headers()) |> handle_response() do
+      {:ok, data} -> {:ok, data.ranking}
+      error -> error
+    end
+  end
 end

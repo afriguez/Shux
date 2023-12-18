@@ -31,7 +31,7 @@ defmodule Shux.Bot.Commands.Leaderboard do
   end
 
   defp build_leaderboard(guild_id) do
-    users = Api.get_leaderboard!(guild_id)
+    {:ok, users} = Api.get_leaderboard(guild_id)
 
     Enum.reduce(users, [], fn user, acc ->
       discord_user = Discord.Api.user(user.id)

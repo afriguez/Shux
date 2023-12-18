@@ -90,7 +90,7 @@ defmodule Shux.Api do
     encoded_user = user |> Poison.encode!()
     route = "/servers/#{guild_id}/users/#{user_id}"
 
-    case post!(route, encoded_user, headers()) |> handle_response() do
+    case patch!(route, encoded_user, headers()) |> handle_response() do
       {:ok, user} -> {:ok, struct(User, user)}
       error -> error
     end

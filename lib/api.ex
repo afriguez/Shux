@@ -139,6 +139,18 @@ defmodule Shux.Api do
     end
   end
 
+  def delete_ticket(guild_id, user_id) do
+    route = "/servers/#{guild_id}/tickets"
+
+    {:ok, tickets} = get_tickets(guild_id)
+    tickets = Map.drop(tickets, [user_id])
+
+    case post!(route, tickets, headers()) |> handle_response() do
+      {:ok, data} -> {:ok, data.tickets}
+      error -> error
+    end
+  end
+
   def get_roles(guild_id) do
     route = "/servers/#{guild_id}/roles"
 

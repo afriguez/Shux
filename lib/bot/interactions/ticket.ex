@@ -1,30 +1,76 @@
 defmodule Shux.Bot.Interactions.Ticket do
-  import Bitwise
-
   alias Shux.Bot.Components
   alias Shux.Discord.Api
+  alias Shux.Discord.BitValues
 
-  def run(%{data: %{custom_id: "close_ticket"}} = interaction),
-    do: Api.delete_channel(interaction.channel_id)
+  def run(%{data: %{custom_id: "close_ticket"}} = interaction) do
+    Api.delete_channel(interaction.channel_id)
+    Shux.Api.delete_ticket(interaction.guild_id, interaction.channel_id)
+  end
 
   def run(interaction) do
-    {:ok, %{body: body}} =
-      Api.create_channel(interaction.guild_id, %{
-        name: interaction.member.user.id,
+    user_id = interaction.member.user.id
+    guild_id = interaction.guild_id
+
+    {:ok, tickets} = Shux.Api.get_tickets(guild_id)
+    has_ticket? = Map.has_key?(tickets, user_id)
+
+    if has_ticket? do
+      Api.interaction_callback(
+        interaction,
+        %{
+          type: 4,
+          data: %{
+            content: "Ya tienes un ticket abierto: <##{tickets[user_id]}>",
+            flags: "#{0x40}"
+          }
+        }
+      )
+    else
+      %{id: channel_id} = create_ticket(guild_id, user_id)
+      send_ticket_message(channel_id, user_id)
+
+      {:ok, %{tickets: ticket_count}} = update_ticket_count(guild_id, user_id)
+
+      Api.interaction_callback(
+        interaction,
+        ticket_created_response(interaction, ticket_count, channel_id)
+      )
+
+      Shux.Api.post_ticket(guild_id, user_id, channel_id)
+    end
+  end
+
+  defp update_ticket_count(guild_id, user_id) do
+    {:ok, %{tickets: tickets}} = Shux.Api.get_user(guild_id, user_id)
+    Shux.Api.update_user(guild_id, user_id, %{tickets: tickets + 1})
+  end
+
+  defp create_ticket(guild_id, user_id) do
+    bit_value =
+      BitValues.value_of(:permissions, [
+        :view_channel,
+        :send_messages,
+        :embed_links,
+        :attach_files,
+        :read_message_history
+      ])
+
+    {:ok, res} =
+      Api.create_channel(guild_id, %{
+        name: user_id,
         type: 0,
         permission_overwrites: [
-          %{
-            id: interaction.member.user.id,
-            type: 1,
-            allow: Integer.to_string(0x400 ||| 0x800 ||| 0x4000 ||| 0x8000 ||| 0x10000)
-          }
+          %{id: user_id, type: 1, allow: bit_value}
         ]
       })
 
-    {:ok, %{id: channel_id}} = Poison.decode(body, %{keys: :atoms})
+    Poison.decode!(res.body, %{keys: :atoms})
+  end
 
+  defp send_ticket_message(channel_id, user_id) do
     Api.send_message(channel_id, %{
-      content: "<@#{interaction.member.user.id}>",
+      content: "<@#{user_id}>",
       embeds: [
         %{
           description:
@@ -45,29 +91,30 @@ defmodule Shux.Bot.Interactions.Ticket do
         ])
       ]
     })
+  end
 
-    response =
-      cond do
-        interaction.data.custom_id == "persistent_ticket" ->
-          %{
-            type: 4,
-            data: %{
-              content: "**Ticket abierto:** <##{channel_id}>",
-              flags: Integer.to_string(0x40)
-            }
+  defp ticket_created_response(interaction, ticket_count, channel_id) do
+    cond do
+      interaction.data.custom_id == "persistent_ticket" ->
+        %{
+          type: 4,
+          data: %{
+            content:
+              "**Ticket abierto:** <##{channel_id}>\nHas abierto un total de **#{ticket_count}** tickets!",
+            flags: "#{0x40}"
           }
+        }
 
-        true ->
-          %{
-            type: 7,
-            data: %{
-              content: "**Ticket abierto:** <##{channel_id}>",
-              components: []
-            }
+      true ->
+        %{
+          type: 7,
+          data: %{
+            content:
+              "**Ticket abierto:** <##{channel_id}>\nHas abierto un total de **#{ticket_count}** tickets!",
+            components: []
           }
-      end
-
-    Api.interaction_callback(interaction, response)
+        }
+    end
   end
 
   def random_color, do: :math.floor(:rand.uniform() * 0xFFFFFF)

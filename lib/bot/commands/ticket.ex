@@ -13,9 +13,9 @@ defmodule Shux.Bot.Commands.Ticket do
     }
   end
 
-  def run(:admin, msg, ["-p"]) do
+  def run(:admin, msg, ["-p" | t]) do
     Api.send_message(msg.channel_id, %{
-      content: "",
+      content: Enum.join(t, " "),
       components: [
         Components.action_row([
           Components.button(

@@ -121,9 +121,12 @@ defmodule Shux.Api do
   def get_tickets(guild_id) do
     route = "/servers/#{guild_id}/tickets"
 
-    case get!(route, headers()) |> handle_response() do
-      {:ok, data} -> {:ok, data.tickets}
-      error -> error
+    %HTTPoison.Response{body: body} = get!(route, headers())
+    {:ok, body} = Poison.decode(body)
+
+    case body do
+      %{"success" => true} -> {:ok, body["data"]["tickets"]}
+      _ -> {:error, body["error"]}
     end
   end
 
@@ -133,21 +136,34 @@ defmodule Shux.Api do
     {:ok, tickets} = get_tickets(guild_id)
     tickets = Map.put(tickets, user_id, channel_id) |> Poison.encode!()
 
-    case post!(route, tickets, headers()) |> handle_response() do
-      {:ok, data} -> {:ok, data.tickets}
-      error -> error
+    %HTTPoison.Response{body: body} = post!(route, tickets, headers())
+    {:ok, body} = Poison.decode(body)
+
+    case body do
+      %{"success" => true} -> {:ok, body["data"]["tickets"]}
+      _ -> {:error, body["error"]}
     end
   end
 
-  def delete_ticket(guild_id, user_id) do
+  def delete_ticket(guild_id, channel_id) do
     route = "/servers/#{guild_id}/tickets"
 
     {:ok, tickets} = get_tickets(guild_id)
-    tickets = Map.drop(tickets, [user_id])
 
-    case post!(route, tickets, headers()) |> handle_response() do
-      {:ok, data} -> {:ok, data.tickets}
-      error -> error
+    user_id =
+      tickets
+      |> Enum.find(fn {_k, v} -> v == channel_id end)
+      |> elem(0)
+
+    tickets = Map.drop(tickets, [user_id])
+    tickets = Poison.encode!(tickets)
+
+    %HTTPoison.Response{body: body} = post!(route, tickets, headers())
+    {:ok, body} = Poison.decode(body)
+
+    case body do
+      %{"success" => true} -> {:ok, body["data"]["tickets"]}
+      _ -> {:error, body["error"]}
     end
   end
 

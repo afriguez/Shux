@@ -22,6 +22,7 @@ defmodule Shux.Bot.Handlers.MessageHandler do
 
     guild_id = data.guild_id
     user_id = data.author.id
+    member = data.member
 
     {:ok, api_user} = Api.get_user(guild_id, user_id)
 
@@ -36,11 +37,8 @@ defmodule Shux.Bot.Handlers.MessageHandler do
       current_command = Map.get(@commands, command)
 
       unless current_command == nil do
-        # perms will be deleted after we setup the api
-        # so that we can get user permissions from there
-        perms = current_command.help().perms
-
-        {_status, _res} = current_command.run(perms, data, args)
+        perms = get_member_permissions(guild_id, member)
+        {:ok, _res} = current_command.run(perms, data, args)
       end
     end
   end
@@ -49,6 +47,35 @@ defmodule Shux.Bot.Handlers.MessageHandler do
   end
 
   def handle(_data, :edited) do
+  end
+
+  def get_member_permissions(guild_id, %{roles: member_roles}) do
+    {:ok, %{roles: api_roles}} = Api.get_roles(guild_id)
+    role_flags = Api.get_role_flags()
+
+    ids_api_roles = Enum.reduce(api_roles, [], &[&1.id | &2])
+    matches = member_roles -- member_roles -- ids_api_roles
+
+    role =
+      Enum.reduce(
+        matches,
+        %{
+          flags: role_flags.user,
+          id: "",
+          name: "",
+          level: 0
+        },
+        fn role_id, acc ->
+          api_role = Enum.find(api_roles, fn e -> e.id == role_id end)
+
+          if api_role.flags < acc.flags,
+            do: api_role,
+            else: acc
+        end
+      )
+
+    Enum.find(role_flags, {:user, nil}, fn {_k, v} -> v == role.flags end)
+    |> elem(0)
   end
 
   def get_commands, do: @commands

@@ -23,7 +23,8 @@ defmodule Shux.Api do
     admin: 1 <<< 1,
     mod: 1 <<< 2,
     tech: 1 <<< 3,
-    colour: 1 <<< 5
+    user: 1 <<< 4,
+    colour: 1 <<< 5,
   }
 
   def process_url(url), do: @endpoint <> url

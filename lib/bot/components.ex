@@ -101,8 +101,8 @@ defmodule Shux.Bot.Components do
   def string_option(props \\ []) do
     %{
       label: Keyword.get(props, :label, nil),
-      value: Keyword.get(props, :label, nil),
-      description: Keyword.get(props, :label, nil),
+      value: Keyword.get(props, :value, nil),
+      description: Keyword.get(props, :description, nil),
       emoji: Keyword.get(props, :emoji, nil)
     }
   end

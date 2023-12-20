@@ -176,8 +176,8 @@ defmodule Shux.Api do
     end
   end
 
-  def post_role(guild_id, role_id, name, flags) do
-    role = Poison.encode!(%{name: name, flags: flags})
+  def post_role(guild_id, role_id, name, flags, level) do
+    role = Poison.encode!(%{name: name, flags: flags, level: level})
     route = "/servers/#{guild_id}/roles/#{role_id}"
 
     case post!(route, role, headers()) |> handle_response() do

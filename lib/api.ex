@@ -19,7 +19,7 @@ defmodule Shux.Api do
   alias Shux.Api.User
 
   @endpoint "https://shux.adrephos.com/api/v1"
-  @roles %{
+  @role_flags %{
     admin: 1 <<< 1,
     mod: 1 <<< 2,
     tech: 1 <<< 3,
@@ -193,11 +193,13 @@ defmodule Shux.Api do
     end
   end
 
+  def get_role_flags, do: @role_flags
+
   defp filter_colors(roles) do
     Enum.reduce(
       roles,
       [],
-      &if(&1.flags == @roles.colour, do: [&1 | &2], else: &2)
+      &if(&1.flags == @role_flags.colour, do: [&1 | &2], else: &2)
     )
     |> Enum.sort_by(& &1.level, :asc)
   end

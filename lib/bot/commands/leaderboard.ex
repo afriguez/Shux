@@ -20,8 +20,14 @@ defmodule Shux.Bot.Commands.Leaderboard do
   def run(_perms, msg, _args) do
     case Cache.get_leaderboard(msg.guild_id) do
       nil ->
-        leaderboard_img = build_leaderboard(msg.guild_id)
-        send_attachment(msg, leaderboard_img)
+        case build_leaderboard(msg.guild_id) do
+          {:error, reason} ->
+            IO.inspect(reason)
+            Discord.Api.send_message(msg.channel_id, "No hay suficientes personas en el ranking.")
+
+          leaderboard_img ->
+            send_attachment(msg, leaderboard_img)
+        end
 
       leaderboard_img ->
         send_attachment(msg, leaderboard_img)
@@ -31,17 +37,21 @@ defmodule Shux.Bot.Commands.Leaderboard do
   end
 
   defp build_leaderboard(guild_id) do
-    {:ok, users} = Api.get_leaderboard(guild_id)
+    case Api.get_leaderboard(guild_id) do
+      {:ok, users} ->
+        Enum.reduce(users, [], fn user, acc ->
+          discord_user = Discord.Api.user(user.id)
+          avatar = Discord.Api.user_avatar(discord_user)
+          level = LevelXpConverter.xp_to_level(user.points)
 
-    Enum.reduce(users, [], fn user, acc ->
-      discord_user = Discord.Api.user(user.id)
-      avatar = Discord.Api.user_avatar(discord_user)
-      level = LevelXpConverter.xp_to_level(user.points)
+          [{avatar, discord_user.username, user.points, level} | acc]
+        end)
+        |> Enum.reverse()
+        |> Leaderboard.build()
 
-      [{avatar, discord_user.username, user.points, level} | acc]
-    end)
-    |> Enum.reverse()
-    |> Leaderboard.build()
+      error ->
+        error
+    end
   end
 
   defp send_attachment(msg, leaderboard_img) do

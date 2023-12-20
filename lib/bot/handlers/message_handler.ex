@@ -38,7 +38,7 @@ defmodule Shux.Bot.Handlers.MessageHandler do
 
       unless current_command == nil do
         perms = get_member_permissions(guild_id, member)
-        {:ok, _res} = current_command.run(perms, data, args)
+        {_status, _res} = current_command.run(perms, data, args)
       end
     end
   end

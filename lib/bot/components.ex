@@ -19,7 +19,7 @@ defmodule Shux.Bot.Components do
     button(
       style: 1,
       label: "Inventario",
-      custom_id: "inventory",
+      custom_id: "inventory-edit",
       disabled: disabled
     )
   end

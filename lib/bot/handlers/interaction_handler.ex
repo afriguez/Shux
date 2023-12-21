@@ -15,7 +15,8 @@ defmodule Shux.Bot.Handlers.InteractionHandler do
     rank: Interactions.Rank,
     profile: Interactions.Profile,
     inventory: Interactions.Inventory,
-    list_colors: Interactions.Inventory
+    list_colors: Interactions.Inventory,
+    color_select: Interactions.Inventory
   }
 
   def handle(data) do

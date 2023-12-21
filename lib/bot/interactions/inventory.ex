@@ -4,6 +4,23 @@ defmodule Shux.Bot.Interactions.Inventory do
   alias Shux.Api
   alias Shux.Discord
 
+  def run(%{data: %{custom_id: "color_select", values: [selection]}} = interaction) do
+    {:ok, colors} = Api.get_colors(interaction.guild_id)
+    %{roles: member_roles} = interaction.member
+
+    ids_colors = Enum.reduce(colors, [], &[&1.id | &2])
+    member_roles = member_roles -- ids_colors
+
+    Discord.Api.update_member(interaction.guild_id, interaction.member.user.id, %{
+      roles: member_roles ++ [selection]
+    })
+
+    Discord.Api.interaction_callback(interaction, %{
+      type: 4,
+      data: %{content: "Se han actualizado tus colores.", flags: 64}
+    })
+  end
+
   def run(interaction) do
     {:ok, user} = Api.get_user(interaction.guild_id, interaction.member.user.id)
 
@@ -31,7 +48,61 @@ defmodule Shux.Bot.Interactions.Inventory do
     }
   end
 
+  defp run_inv(_interaction, %{unlocked: []}) do
+    %{
+      type: 4,
+      data: %{
+        content: "Oops! No tienes colores",
+        flags: 64
+      }
+    }
+  end
+
+  defp run_inv(%{data: %{custom_id: "inventory-edit"}}, colors) do
+    {options, fields} = options_and_fields(colors)
+
+    %{
+      type: 7,
+      data: basic_data(fields, options)
+    }
+  end
+
   defp run_inv(_interaction, colors) do
+    {options, fields} = options_and_fields(colors)
+
+    %{
+      type: 4,
+      data: basic_data(fields, options)
+    }
+  end
+
+  defp basic_data(fields, options) do
+    %{
+      embeds: [
+        %{
+          title: "Inventario de colores",
+          color: 0xFFFFFF,
+          fields: fields
+        }
+      ],
+      components: [
+        Components.action_row([
+          Components.string_select(
+            custom_id: "color_select",
+            options: options,
+            placeholder: "¿Quieres cambiar de color?"
+          )
+        ]),
+        Components.action_row([
+          Components.inventory_btn(true),
+          Components.list_colors_btn()
+        ])
+      ],
+      flags: 64
+    }
+  end
+
+  defp options_and_fields(colors) do
     options =
       for color <- colors.unlocked do
         Components.string_option(
@@ -49,31 +120,7 @@ defmodule Shux.Bot.Interactions.Inventory do
         %{name: "Nivel #{color.level}", value: "<@&#{color.id}>", inline: true}
       end
 
-    %{
-      type: 7,
-      data: %{
-        embeds: [
-          %{
-            title: "Inventario de colores",
-            color: 0xFFFFFF,
-            fields: fields
-          }
-        ],
-        components: [
-          Components.action_row([
-            Components.string_select(
-              custom_id: "color_select",
-              options: options,
-              placeholder: "¿Quieres cambiar de color?"
-            )
-          ]),
-          Components.action_row([
-            Components.inventory_btn(true),
-            Components.list_colors_btn()
-          ])
-        ]
-      }
-    }
+    {options, fields}
   end
 
   defp split_colors(guild_id, points) do
@@ -81,6 +128,8 @@ defmodule Shux.Bot.Interactions.Inventory do
 
     colors
     |> Enum.reduce(%{locked: [], unlocked: []}, fn color, acc ->
+      IO.inspect(color)
+
       if LevelXpConverter.xp_to_level(points) >= color.level do
         %{acc | unlocked: [color | acc.unlocked]}
       else

@@ -11,7 +11,8 @@ defmodule Shux.Bot.Handlers.MessageHandler do
     rank: Commands.Rank,
     leaderboard: Commands.Leaderboard,
     lb: Commands.Leaderboard,
-    help: Commands.Help
+    help: Commands.Help,
+    addcolor: Commands.Addcolor
   }
 
   def handle(data) do
@@ -36,7 +37,7 @@ defmodule Shux.Bot.Handlers.MessageHandler do
 
       unless current_command == nil do
         perms = get_member_permissions(guild_id, member)
-        {_status, _res} = current_command.run(perms, data, args)
+        current_command.run(perms, data, args)
       end
     end
   end

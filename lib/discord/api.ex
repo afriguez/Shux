@@ -52,6 +52,17 @@ defmodule Shux.Discord.Api do
     member
   end
 
+  def update_member(guild_id, user_id, member) do
+    route = "/guilds/#{guild_id}/members/#{user_id}"
+    member = Poison.encode!(member)
+    %HTTPoison.Response{body: body} = patch!(route, member, headers())
+
+    member = Poison.decode!(body, %{keys: :atoms})
+    Cache.put_member(guild_id, member)
+
+    member
+  end
+
   def global_commands() do
     case Cache.get_commands() do
       nil -> fetch_global_commands()

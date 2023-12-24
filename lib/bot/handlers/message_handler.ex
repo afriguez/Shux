@@ -12,7 +12,8 @@ defmodule Shux.Bot.Handlers.MessageHandler do
     leaderboard: Commands.Leaderboard,
     lb: Commands.Leaderboard,
     help: Commands.Help,
-    addcolor: Commands.Addcolor
+    addcolor: Commands.Addcolor,
+    role: Commands.Role
   }
 
   def handle(data) do

@@ -58,14 +58,23 @@ defmodule Shux.Bot.Interactions.Ticket do
 
     {:ok, tickets_category} = Shux.Api.get_tickets_category(guild_id)
 
+    {:ok, %{roles: roles}} = Shux.Api.get_roles(guild_id)
+    role_flags = Shux.Api.get_role_flags()
+
+    tech_overwrites =
+      roles
+      |> Shux.Api.filter_by_flags(role_flags.tech)
+      |> Enum.map(fn role -> %{id: role.id, type: 0, allow: bit_value} end)
+
     {:ok, res} =
       Api.create_channel(guild_id, %{
         name: user_id,
         type: 0,
         parent_id: tickets_category.id,
-        permission_overwrites: [
-          %{id: user_id, type: 1, allow: bit_value}
-        ]
+        permission_overwrites:
+          [
+            %{id: user_id, type: 1, allow: bit_value}
+          ] ++ tech_overwrites
       })
 
     Poison.decode!(res.body, %{keys: :atoms})

@@ -189,12 +189,16 @@ defmodule Shux.Api do
 
   def get_role_flags, do: @role_flags
 
-  defp filter_colors(roles) do
+  def filter_api_roles(roles, role_flags) do
     Enum.reduce(
       roles,
       [],
-      &if(&1.flags == @role_flags.colour, do: [&1 | &2], else: &2)
+      &if(&1.flags == role_flags, do: [&1 | &2], else: &2)
     )
+  end
+
+  defp filter_colors(roles) do
+    filter_api_roles(roles, @role_flags.colour)
     |> Enum.sort_by(& &1.level, :asc)
   end
 end

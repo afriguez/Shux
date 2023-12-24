@@ -26,6 +26,9 @@ defmodule Shux.Api do
     user: 1 <<< 4,
     colour: 1 <<< 5
   }
+  @channel_flags %{
+    tickets: 1 <<< 1
+  }
 
   def process_url(url), do: @endpoint <> url
 
@@ -189,7 +192,7 @@ defmodule Shux.Api do
 
   def get_role_flags, do: @role_flags
 
-  def filter_api_roles(roles, role_flags) do
+  def filter_by_flags(roles, role_flags) do
     Enum.reduce(
       roles,
       [],
@@ -198,7 +201,42 @@ defmodule Shux.Api do
   end
 
   defp filter_colors(roles) do
-    filter_api_roles(roles, @role_flags.colour)
+    filter_by_flags(roles, @role_flags.colour)
     |> Enum.sort_by(& &1.level, :asc)
+  end
+
+  def get_channels(guild_id) do
+    route = "/servers/#{guild_id}/channels"
+
+    case get!(route, headers()) |> handle_response() do
+      {:ok, data} -> {:ok, data.channels}
+      error -> error
+    end
+  end
+
+  def post_channel(guild_id, channel_id, flags) do
+    channel = %{flags: flags} |> Poison.encode!()
+    route = "/servers/#{guild_id}/channels/#{channel_id}"
+
+    case post!(route, channel, headers()) |> handle_response() do
+      {:ok, data} -> {:ok, data}
+      error -> error
+    end
+  end
+
+  def get_tickets_category(guild_id) do
+    case get_channels(guild_id) do
+      {:ok, channels} ->
+        tickets_category =
+          case filter_by_flags(channels, @channel_flags.tickets) do
+            [] -> %{id: nil}
+            filtered -> hd(filtered)
+          end
+
+        {:ok, tickets_category}
+
+      error ->
+        error
+    end
   end
 end

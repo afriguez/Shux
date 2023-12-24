@@ -56,10 +56,13 @@ defmodule Shux.Bot.Interactions.Ticket do
         :read_message_history
       ])
 
+    {:ok, tickets_category} = Shux.Api.get_tickets_category(guild_id)
+
     {:ok, res} =
       Api.create_channel(guild_id, %{
         name: user_id,
         type: 0,
+        parent_id: tickets_category.id,
         permission_overwrites: [
           %{id: user_id, type: 1, allow: bit_value}
         ]

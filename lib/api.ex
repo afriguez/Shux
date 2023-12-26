@@ -2,11 +2,11 @@ defmodule Shux.Api.User do
   defstruct [
     :description,
     points: 0,
-    show_level: false,
     warnings: 0,
     warnings_record: [],
     beta: false,
-    tickets: 0
+    tickets: 0,
+    flags: 0
   ]
 end
 

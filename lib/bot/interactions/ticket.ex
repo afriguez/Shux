@@ -73,7 +73,8 @@ defmodule Shux.Bot.Interactions.Ticket do
         parent_id: tickets_category.id,
         permission_overwrites:
           [
-            %{id: user_id, type: 1, allow: bit_value}
+            %{id: user_id, type: 1, allow: bit_value},
+            %{id: guild_id, type: 0, deny: BitValues.value_of(:permissions, [:view_channel])}
           ] ++ tech_overwrites
       })
 

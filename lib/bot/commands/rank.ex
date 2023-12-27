@@ -18,24 +18,28 @@ defmodule Shux.Bot.Commands.Rank do
   def run(_perms, msg, _args) do
     user = if Enum.empty?(msg.mentions), do: msg.author, else: hd(msg.mentions)
 
-    {:ok, %{rank: rank, points: points}} = Api.get_rank(msg.guild_id, user.id)
+    case Api.get_rank(msg.guild_id, user.id) do
+      {:ok, %{rank: rank, points: points}} ->
+        username = user.username
+        level = LevelXpConverter.xp_to_level(points)
+        avatar = Discord.Api.user_avatar(user)
 
-    username = user.username
-    level = LevelXpConverter.xp_to_level(points)
-    avatar = Discord.Api.user_avatar(user)
+        image =
+          Rank.build(
+            avatar,
+            {
+              username,
+              points,
+              level,
+              rank
+            }
+          )
 
-    image =
-      Rank.build(
-        avatar,
-        {
-          username,
-          points,
-          level,
-          rank
-        }
-      )
+        Discord.Api.send_image(msg.channel_id, image)
 
-    Discord.Api.send_image(msg.channel_id, image)
+      {:error, _reason} ->
+        Discord.Api.send_message(msg.channel_id, "**#{String.capitalize(user.username)}** no tiene puntaje!")
+    end
 
     {:ok, nil}
   end

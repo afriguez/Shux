@@ -48,33 +48,40 @@ defmodule Shux.Bot.Interactions.Rank do
         user.id
       end
 
-    {:ok, %{rank: rank, points: points}} = Api.get_rank(interaction.guild_id, target_id)
+    case Api.get_rank(interaction.guild_id, target_id) do
+      {:ok, %{rank: rank, points: points}} ->
+        username = user.username
+        level = LevelXpConverter.xp_to_level(points)
+        avatar = Discord.Api.user_avatar(user)
 
-    username = user.username
-    level = LevelXpConverter.xp_to_level(points)
-    avatar = Discord.Api.user_avatar(user)
+        image =
+          ImageBuilder.Rank.build(avatar, {
+            username,
+            points,
+            level,
+            rank
+          })
 
-    image =
-      ImageBuilder.Rank.build(avatar, {
-        username,
-        points,
-        level,
-        rank
-      })
+        response = %{
+          type: 4,
+          data: %{
+            content: "",
+            components: [
+              Components.action_row([
+                Components.profile_avatar_btn(user.id),
+                Components.banner_btn(user.id)
+              ])
+            ]
+          }
+        }
 
-    response = %{
-      type: 4,
-      data: %{
-        content: "",
-        components: [
-          Components.action_row([
-            Components.profile_avatar_btn(user.id),
-            Components.banner_btn(user.id)
-          ])
-        ]
-      }
-    }
+        Discord.Api.interaction_callback(interaction, response, image)
 
-    Discord.Api.interaction_callback(interaction, response, image)
+      {:error, _reason} ->
+        Discord.Api.interaction_callback(interaction, %{
+          type: 4,
+          data: %{content: "**#{String.capitalize(user.username)}** no tiene puntaje!"}
+        })
+    end
   end
 end

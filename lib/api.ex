@@ -24,7 +24,8 @@ defmodule Shux.Api do
     mod: 1 <<< 2,
     tech: 1 <<< 3,
     user: 1 <<< 4,
-    colour: 1 <<< 5
+    colour: 1 <<< 5,
+    files: 1 <<< 6
   }
   @channel_flags %{
     tickets: 1 <<< 1

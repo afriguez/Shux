@@ -1,4 +1,5 @@
 defmodule Shux.Bot.Handlers.MessageHandler do
+  alias Shux.Bot.Leveling.LevelXpConverter
   alias Shux.Api
   alias Shux.Bot.Leveling.XpCalculator
   alias Shux.Bot.Commands
@@ -25,11 +26,28 @@ defmodule Shux.Bot.Handlers.MessageHandler do
     member = data.member
 
     {:ok, api_user} = Api.get_user(guild_id, user_id)
+    points = api_user.points + xp
+    level = LevelXpConverter.xp_to_level(points)
+
+    {:ok, %{roles: roles}} = Api.get_roles(guild_id)
+    role = roles |> Enum.find(fn r -> r.flags == Api.get_role_flags().files end)
+
+    if level >= role.level do
+      data.member.roles
+      |> Enum.any?(&(&1 == role.id))
+      |> unless do
+        Shux.Discord.Api.update_member(
+          guild_id,
+          user_id,
+          %{roles: data.member.roles ++ [role.id]}
+        )
+      end
+    end
 
     Api.update_user(
       guild_id,
       user_id,
-      %{points: api_user.points + xp}
+      %{points: points}
     )
 
     if is_command?(content) do

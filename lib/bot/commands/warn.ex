@@ -28,7 +28,7 @@ defmodule Shux.Bot.Commands.Warn do
 
       case rem(warnings, 3) do
         1 -> Api.send_message(ch_id, "#{user.username} ha sido **warneado**.")
-        2 -> warn(warnings, guild_id, ch_id, user)
+        2 -> kick(warnings, guild_id, ch_id, user)
         0 -> ban(guild_id, ch_id, user)
       end
 
@@ -40,7 +40,7 @@ defmodule Shux.Bot.Commands.Warn do
 
   def run(_perms, _msg, _args), do: {:invalid, "Not authorized"}
 
-  defp warn(warnings, guild_id, ch_id, user) do
+  defp kick(warnings, guild_id, ch_id, user) do
     {:ok, _res} = Api.delete("/guilds/#{guild_id}/members/#{user.id}", Api.headers())
 
     Api.send_message(

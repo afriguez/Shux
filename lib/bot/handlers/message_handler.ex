@@ -1,4 +1,5 @@
 defmodule Shux.Bot.Handlers.MessageHandler do
+  alias Shux.Bot.Easter
   alias Shux.Bot.Leveling.LevelXpConverter
   alias Shux.Api
   alias Shux.Bot.Leveling.XpCalculator
@@ -19,6 +20,7 @@ defmodule Shux.Bot.Handlers.MessageHandler do
   }
 
   def handle(data) do
+    Easter.egg(data)
     content = data.content
     xp = XpCalculator.calculate(content)
 

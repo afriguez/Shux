@@ -18,7 +18,6 @@ defmodule Shux.Api do
   alias Shux.Discord.Cache
   alias Shux.Api.User
 
-  @endpoint "https://shux.adrephos.com/api/v1"
   @role_flags %{
     admin: 1 <<< 1,
     mod: 1 <<< 2,
@@ -31,7 +30,7 @@ defmodule Shux.Api do
     tickets: 1 <<< 1
   }
 
-  def process_url(url), do: @endpoint <> url
+  def process_url(url), do: Application.get_env(:shux, :api) <> url
 
   def headers do
     {access, _refresh} = Cache.get_tokens()

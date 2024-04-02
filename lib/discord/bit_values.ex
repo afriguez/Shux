@@ -43,6 +43,7 @@ defmodule Shux.Discord.BitValues do
     %{
       view_channel: 1 <<< 10,
       send_messages: 1 <<< 11,
+      manage_messages: 1 <<< 13,
       embed_links: 1 <<< 14,
       attach_files: 1 <<< 15,
       read_message_history: 1 <<< 16

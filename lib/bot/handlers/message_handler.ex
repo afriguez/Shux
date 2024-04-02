@@ -1,4 +1,5 @@
 defmodule Shux.Bot.Handlers.MessageHandler do
+  alias Shux.Discord
   alias Shux.Bot.Easter
   alias Shux.Bot.Leveling.LevelXpConverter
   alias Shux.Api
@@ -20,9 +21,19 @@ defmodule Shux.Bot.Handlers.MessageHandler do
   }
 
   def handle(data) do
-    Easter.egg(data)
     content = data.content
     xp = XpCalculator.calculate(content)
+
+    if has_invite_link?(data.content) do
+      Discord.Api.delete(
+        "/guilds/#{data.guild_id}/members/#{data.author.id}",
+        Discord.Api.headers()
+      )
+
+      Discord.Api.delete("/channels/#{data.channel_id}/messages/#{data.id}", Discord.Api.headers())
+    end
+
+    Easter.egg(data)
 
     guild_id = data.guild_id
     user_id = data.author.id
@@ -113,5 +124,10 @@ defmodule Shux.Bot.Handlers.MessageHandler do
     |> (fn [command | args] ->
           [command |> String.downcase() |> String.to_atom() | args]
         end).()
+  end
+
+  defp has_invite_link?(content) do
+    ~r/(http(s)?)?:\/\/(www.)?(discord.gg|discord.io|discord.me|invite.gg)\/\w+/
+    |> Regex.match?(content)
   end
 end
